@@ -6,7 +6,7 @@ import ChatSectionFooter from "./ChatSectionFooter";
 import ChatSectionHeader from "./ChatSectionHeader";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
 import { addChatMessageData } from "@/redux/features/chatMessage/chatMessageSlice";
-import Cookies from "js-cookie";
+import Cookies from "../../../node_modules/@types/js-cookie";
 import { useSocket } from "@/context/Socket";
 import constants from "@/constants";
 import { updateChatRoomContactIndex } from "@/redux/features/chatRoom/chatRoomSlice";

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { login, logout, register } from "./authApi";
-import Cookies from "js-cookie";
+import Cookies from "../../../../node_modules/@types/js-cookie";
 import CookieService from "@/lib/cookies";
 import constants from "@/constants";
 

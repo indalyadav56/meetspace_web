@@ -1,29 +1,24 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { register } from "@/redux/features/auth/authApi";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
-import { useAppDispatch } from "@/hooks/useStoreHook";
+import useAuthStore from "@/store/authStore";
 
 const RegisterForm = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  const notify = () => toast("Wow so easy!");
+  const { registerUser, authData } = useAuthStore();
 
   const formSchema = z.object({
     first_name: z.string().min(2, {
@@ -50,18 +45,16 @@ const RegisterForm = () => {
     },
   });
 
+  // useEffect(() => {
+  //   console.log("backend error data->", authData?.error);
+  // }, [authData]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    dispatch(register(values)).then((response) => {
-      notify();
-      if (response.payload.status_code === 200) {
-        router.push("/");
-      }
-    });
+    registerUser(values);
   }
 
   return (
     <main>
-      <ToastContainer />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -77,6 +70,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input placeholder="first name" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -89,6 +83,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input placeholder="last name" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -101,6 +96,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input placeholder="email" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -113,6 +109,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input type="password" placeholder="password" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

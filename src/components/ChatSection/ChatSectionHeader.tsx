@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { PhoneCall, Users, Video } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
 import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import Cookies from "../../../node_modules/@types/js-cookie";
 import DrawerBox from "../DrawerBox";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
