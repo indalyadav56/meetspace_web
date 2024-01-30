@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import Cookies from "../../node_modules/@types/js-cookie";
+import Cookies from "js-cookie";
 
 interface CreateRoomData {}
 

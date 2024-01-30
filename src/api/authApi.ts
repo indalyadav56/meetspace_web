@@ -24,20 +24,17 @@ const api = axios.create({
   baseURL,
 });
 
+api.interceptors.response.use((resp) => {
+  console.log("interception response received", resp);
+  return resp;
+});
+
 export const login = async (data: LoginData): Promise<AxiosResponse> => {
   return api.post("/v1/auth/login", data);
 };
 
-export const register = async (data: RegisterData) => {
-  const response = await fetch(`${baseURL}/v1/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  const dataRes = await response.json();
-  return dataRes;
+export const register = (data: RegisterData) => {
+  return api.post("/v1/auth/register", data);
 };
 
 export const logout = async (data: LogoutData): Promise<AxiosResponse> => {

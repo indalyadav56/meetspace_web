@@ -1,5 +1,5 @@
 import axios from "axios";
-import Cookies from "../../node_modules/@types/js-cookie";
+import Cookies from "js-cookie";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const token = Cookies.get("meetspace_access_token");

@@ -5,7 +5,7 @@ import ChatSection from "@/components/ChatSection";
 import SideBar from "@/components/SideBar";
 import { useEffect } from "react";
 import { useSocket } from "@/context/Socket";
-import Cookies from "../../node_modules/@types/js-cookie";
+import Cookies from "js-cookie";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
 import NavBar from "@/components/NavBar";
 import constants from "../constants";

@@ -1,9 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ClipLoader from "react-spinners/ClipLoader";
+import CookieService from "@/lib/cookies";
+import constants from "@/constants";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -18,7 +24,10 @@ import {
 import useAuthStore from "@/store/authStore";
 
 const RegisterForm = () => {
-  const { registerUser, authData } = useAuthStore();
+  const { registerUser, loading, error, message, success, authData } =
+    useAuthStore();
+  const router = useRouter();
+  const notify = (msg: string) => toast(msg);
 
   const formSchema = z.object({
     first_name: z.string().min(2, {
@@ -45,16 +54,44 @@ const RegisterForm = () => {
     },
   });
 
-  // useEffect(() => {
-  //   console.log("backend error data->", authData?.error);
-  // }, [authData]);
+  useEffect(() => {
+    if (error && message) {
+      notify(message);
+      error.forEach((err) => {
+        form.setError(err?.field, {
+          type: "manual",
+          message: err?.message,
+        });
+        form.setFocus(err?.field);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, message]);
+
+  useEffect(() => {
+    if (success) {
+      CookieService.setCookie(
+        constants.token.ACCESS_TOKEN,
+        authData.data.token.access
+      );
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [success]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     registerUser(values);
   }
 
+  useEffect(() => {
+    return () => {
+      useAuthStore.setState({ error: null, message: null });
+    };
+  }, []);
+
   return (
     <main>
+      <ToastContainer />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -113,9 +150,21 @@ const RegisterForm = () => {
               </FormItem>
             )}
           />
-          <Button className="w-full h-14" type="submit">
-            Submit
-          </Button>
+          {!loading ? (
+            <Button className="w-full h-14" type="submit">
+              Submit
+            </Button>
+          ) : (
+            <div className="flex justify-center">
+              <ClipLoader
+                color={"#ad1a1a"}
+                loading={true}
+                size={80}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            </div>
+          )}
         </form>
       </Form>
     </main>
