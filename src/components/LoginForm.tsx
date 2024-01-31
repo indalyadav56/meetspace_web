@@ -9,21 +9,22 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { login } from "@/redux/features/auth/authApi";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
-import { useAppDispatch } from "@/hooks/useStoreHook";
+import useAuthStore from "@/store/authStore";
+import { useEffect } from "react";
 
 const LoginForm = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { loginUser, resetForm, loading, error, message, success, authData } =
+    useAuthStore();
 
-  const notify = () => toast("Wow so easy!");
+  const notify = (msg: string) => toast(msg);
 
   const formSchema = z.object({
     email: z.string().min(2, {
@@ -43,13 +44,29 @@ const LoginForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    dispatch(login(values)).then((response) => {
-      notify();
-      if (response.payload.status_code === 200) {
-        router.push("/");
-      }
-    });
+    loginUser(values);
   }
+
+  useEffect(() => {
+    if (error && message) {
+      notify(message);
+      error.forEach((err) => {
+        form.setError(err?.field, {
+          type: "manual",
+          message: err?.message,
+        });
+        form.setFocus(err?.field);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, message]);
+
+  useEffect(() => {
+    return () => {
+      resetForm();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main>
@@ -65,6 +82,7 @@ const LoginForm = () => {
                 <FormControl>
                   <Input placeholder="email" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -77,6 +95,7 @@ const LoginForm = () => {
                 <FormControl>
                   <Input type="password" placeholder="password" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

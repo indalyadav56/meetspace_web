@@ -38,9 +38,5 @@ export const register = (data: RegisterData) => {
 };
 
 export const logout = async (data: LogoutData): Promise<AxiosResponse> => {
-  api.defaults.headers.common[
-    "Authorization"
-  ] = `Bearer ${CookieService.getCookie(constants.token.ACCESS_TOKEN)}`;
-
   return api.post("/v1/auth/logout", data);
 };

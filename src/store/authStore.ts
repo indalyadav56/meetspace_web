@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { register } from "../api/authApi";
+import { register, login } from "../api/authApi";
 import { AxiosError } from "axios";
 
 type Store = {
@@ -10,6 +10,8 @@ type Store = {
   authData: Object;
 
   registerUser: (reqData: any) => Promise<any>;
+  loginUser: (reqData: any) => Promise<any>;
+  resetForm: () => void;
 };
 
 const useAuthStore = create<Store>()((set) => ({
@@ -29,6 +31,22 @@ const useAuthStore = create<Store>()((set) => ({
         const resp = err.response?.data;
         set({ error: resp?.error, message: resp?.message, loading: false });
       });
+  },
+
+  loginUser: async (reqData: any) => {
+    set({ loading: true });
+    login(reqData)
+      .then((response) => {
+        set({ authData: response.data, loading: false, success: true });
+      })
+      .catch((err: AxiosError) => {
+        const resp = err.response?.data;
+        set({ error: resp?.error, message: resp?.message, loading: false });
+      });
+  },
+
+  resetForm: () => {
+    set({ error: null, message: null });
   },
 }));
 
