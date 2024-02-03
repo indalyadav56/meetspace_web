@@ -4,6 +4,8 @@ import Cookies from "js-cookie";
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const token = Cookies.get("meetspace_access_token");
 
+console.log("token", token);
+
 const api = axios.create({
   baseURL: baseUrl,
   headers: {

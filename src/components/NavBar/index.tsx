@@ -5,10 +5,7 @@ import { Button } from "../ui/button";
 import { Check } from "lucide-react";
 import SearchUser from "../SearchUser";
 import UserAvatar from "../UserAvatar";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
-import { logout } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
-import { getSingleUser, updateUser } from "@/redux/features/user/userApi";
 import DialogBox from "../DialogBox";
 import {
   DropdownMenu,
@@ -20,6 +17,8 @@ import {
 import CookieService from "@/lib/cookies";
 import constants from "@/constants";
 import { jwtDecode } from "jwt-decode";
+import useAuthStore from "@/store/authStore";
+import useUserStore from "@/store/userStore";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
@@ -28,9 +27,8 @@ const NavBar = () => {
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
     null
   );
-
-  const currentUser = useAppSelector((state) => state.userReducer.currentUser);
-  const dispatch = useAppDispatch();
+  const { logoutUser } = useUserStore();
+  const { logoutUser } = useAuthStore();
   const router = useRouter();
   const fileRef = useRef();
 
@@ -43,9 +41,8 @@ const NavBar = () => {
 
   const handleLogout = () => {
     CookieService.removeCookie(constants.token.ACCESS_TOKEN);
-    dispatch(logout({ token: "aweraer" })).then(() => {
-      router.push("/login");
-    });
+    router.push("/login");
+    logoutUser();
   };
 
   const handleFileUpload = () => {
@@ -73,7 +70,7 @@ const NavBar = () => {
     if (accessToken) {
       const decoded = jwtDecode(accessToken);
       if (decoded?.user_id) {
-        dispatch(getSingleUser(decoded?.user_id));
+        // dispatch(getSingleUser(decoded?.user_id));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,12 +80,12 @@ const NavBar = () => {
     const formData = new FormData();
     if (selectedFile) {
       formData.append("profile_pic", selectedFile);
-      dispatch(updateUser(formData)).then((response) => {
-        if (response.payload.status_code === 200) {
-          // SHOW TOASTS
-        }
-        setOpen(false);
-      });
+      // dispatch(updateUser(formData)).then((response) => {
+      //   if (response.payload.status_code === 200) {
+      //     // SHOW TOASTS
+      //   }
+      //   setOpen(false);
+      // });
     }
   };
 

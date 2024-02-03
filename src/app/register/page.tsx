@@ -10,8 +10,10 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import constants from "@/constants";
+import useAuthStore from "@/store/authStore";
 
 const RegsiterPage = () => {
+  const { resetForm } = useAuthStore();
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-center overflow-x-hidden">
       <Card className="w-1/4">
@@ -24,7 +26,11 @@ const RegsiterPage = () => {
         <CardFooter>
           <span className="text-sm">
             {constants.auth.ALREADY_LOGIN_MSG}
-            <Link className="text-blue-400 font-semibold" href="/login">
+            <Link
+              className="text-blue-400 font-semibold"
+              href="/login"
+              onClick={resetForm}
+            >
               Login
             </Link>
           </span>

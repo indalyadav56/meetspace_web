@@ -14,6 +14,11 @@ const useUserStore = create<Store>()((set) => ({
     const users = await getAllUsers();
     set({ users: users.data });
   },
+
+  getSingleUser: async () => {
+    const users = await getAllUsers();
+    set({ users: users.data });
+  },
 }));
 
 export default useUserStore;

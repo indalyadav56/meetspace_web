@@ -29,7 +29,10 @@ const ForgotPasswordForm = () => {
     email: z.string().min(2, {
       message: "email must be at least 2 characters.",
     }),
-    password: z.string().min(2, {
+    new_password: z.string().min(2, {
+      message: "password must be at least 2 characters.",
+    }),
+    confirm_password: z.string().min(2, {
       message: "password must be at least 2 characters.",
     }),
   });
@@ -38,7 +41,8 @@ const ForgotPasswordForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
+      new_password: "",
+      confirm_password: "",
     },
   });
 
@@ -64,6 +68,30 @@ const ForgotPasswordForm = () => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input placeholder="email" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="new_password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>New Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="new password" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirm_password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="confirm password" {...field} />
                 </FormControl>
               </FormItem>
             )}

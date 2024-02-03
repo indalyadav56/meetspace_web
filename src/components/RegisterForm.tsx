@@ -8,8 +8,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ClipLoader from "react-spinners/ClipLoader";
-import CookieService from "@/lib/cookies";
-import constants from "@/constants";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -22,6 +20,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import useAuthStore from "@/store/authStore";
+import CookieService from "@/lib/cookies";
+import constants from "@/constants";
 
 const RegisterForm = () => {
   const { registerUser, loading, error, message, success, authData } =
@@ -82,12 +82,6 @@ const RegisterForm = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     registerUser(values);
   }
-
-  useEffect(() => {
-    return () => {
-      useAuthStore.setState({ error: null, message: null });
-    };
-  }, []);
 
   return (
     <main>

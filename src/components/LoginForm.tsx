@@ -19,11 +19,14 @@ import {
 } from "@/components/ui/form";
 import useAuthStore from "@/store/authStore";
 import { useEffect } from "react";
+import CookieService from "@/lib/cookies";
+import constants from "@/constants";
 
 const LoginForm = () => {
   const { loginUser, resetForm, loading, error, message, success, authData } =
     useAuthStore();
 
+  const router = useRouter();
   const notify = (msg: string) => toast(msg);
 
   const formSchema = z.object({
@@ -62,11 +65,15 @@ const LoginForm = () => {
   }, [error, message]);
 
   useEffect(() => {
-    return () => {
-      resetForm();
-    };
+    if (success) {
+      CookieService.setCookie(
+        constants.token.ACCESS_TOKEN,
+        authData.data.token.access
+      );
+      router.push("/");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [success]);
 
   return (
     <main>
