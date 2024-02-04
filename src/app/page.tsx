@@ -6,19 +6,14 @@ import SideBar from "@/components/SideBar";
 import { useEffect } from "react";
 import { useSocket } from "@/context/Socket";
 import Cookies from "js-cookie";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
 import NavBar from "@/components/NavBar";
 import constants from "../constants";
-import { updateChatRoomContactIndex } from "@/redux/features/chatRoom/chatRoomSlice";
 import useUserStore from "@/store/userStore";
 
 export default function Home() {
-  const dispatch = useAppDispatch();
   const socket = useSocket();
   const currentUserId = Cookies.get("currentUserId");
-  const receiverUser = useAppSelector(
-    (state) => state.chatRoomReducer.receiverUser
-  );
+  const receiverUser = null;
 
   const { getAllUsers } = useUserStore();
 
@@ -50,19 +45,19 @@ export default function Home() {
       message.data.receiver_user.id === currentUserId
     ) {
       showNotification("New Message", message.data.content);
-      dispatch(
-        updateChatRoomContactIndex({
-          user_id: message.data.sender_user.id,
-          first_name: message.data.sender_user.first_name,
-          last_name: message.data.sender_user.last_name,
-          is_active: message.data.sender_user.is_active,
-          is_group: message.data.is_group,
-          last_message: message.data.content,
-          message_unseen_count: 10,
-          room_id: message.data.room_id,
-          room_name: message.data.room_name,
-        })
-      );
+      // dispatch(
+      //   updateChatRoomContactIndex({
+      //     user_id: message.data.sender_user.id,
+      //     first_name: message.data.sender_user.first_name,
+      //     last_name: message.data.sender_user.last_name,
+      //     is_active: message.data.sender_user.is_active,
+      //     is_group: message.data.is_group,
+      //     last_message: message.data.content,
+      //     message_unseen_count: 10,
+      //     room_id: message.data.room_id,
+      //     room_name: message.data.room_name,
+      //   })
+      // );
     }
   };
 

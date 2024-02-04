@@ -3,8 +3,6 @@
 import React, { useEffect } from "react";
 import UserAvatar from "./UserAvatar";
 import { Dot, MoreHorizontal } from "lucide-react";
-import { updateMessageUnseenCount } from "@/redux/features/chatMessage/chatMessageSlice";
-import { useAppDispatch } from "@/hooks/useStoreHook";
 
 interface UserAndGroupCardProps {
   data: {
@@ -27,14 +25,14 @@ const ChatContactCard: React.FC<UserAndGroupCardProps> = (props) => {
   const userRef = React.useRef(null);
   const { data, onUserClick, className } = props;
 
-  const dispatch = useAppDispatch();
+  const dispatch = null;
 
-  const userProfilePath =
-    process.env.NEXT_PUBLIC_API_BASE_URL +
-    "/uploads/" +
-    data?.id +
-    "/profile/" +
-    data?.profile_pic?.temp_name;
+  const userProfilePath = null;
+  //   process.env.NEXT_PUBLIC_API_BASE_URL +
+  //   "/uploads/" +
+  //   data?.id +
+  //   "/profile/" +
+  //   data?.profile_pic?.temp_name;
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
@@ -44,7 +42,7 @@ const ChatContactCard: React.FC<UserAndGroupCardProps> = (props) => {
 
   useEffect(() => {
     if (data.message_unseen_count) {
-      dispatch(updateMessageUnseenCount(data.message_unseen_count));
+      // dispatch(updateMessageUnseenCount(data.message_unseen_count));
     }
   }, [data]);
 
@@ -59,7 +57,7 @@ const ChatContactCard: React.FC<UserAndGroupCardProps> = (props) => {
       {data.message_unseen_count ? <Dot color="red" /> : null}
       <UserAvatar
         isOnline={data.is_active}
-        imgSrc={userProfilePath}
+        // imgSrc={userProfilePath}
         size="sm"
       />
       <div className="flex-1 flex justify-between">

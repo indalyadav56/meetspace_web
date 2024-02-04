@@ -1,18 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import { Input } from "./ui/input";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
-import { searchUser } from "@/redux/features/user/userApi";
 import UserList from "./ChatContactList";
 
 const SearchUser: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = null;
   const ref = useRef(null);
 
   const [isFocused, setIsFocused] = React.useState(false);
-  const usersData = useAppSelector((state) => state.userReducer.users);
+  const usersData = null;
 
   useEffect(() => {
-    dispatch(searchUser());
+    // dispatch(searchUser());
   }, [isFocused]);
 
   useEffect(() => {

@@ -38,5 +38,10 @@ export const register = (data: RegisterData) => {
 };
 
 export const logout = async (data: LogoutData): Promise<AxiosResponse> => {
-  return api.post("/v1/auth/logout", data);
+  const token = CookieService.getCookie("meetspace_access_token");
+  return api.post("/v1/auth/logout", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };

@@ -1,6 +1,9 @@
 import { create } from "zustand";
-import { register, login, logout } from "../api/authApi";
 import { AxiosError } from "axios";
+
+import { register, login, logout } from "../api/authApi";
+import CookieService from "@/lib/cookies";
+import constants from "@/constants";
 
 type Store = {
   success: boolean;
@@ -50,6 +53,7 @@ const useAuthStore = create<Store>()((set) => ({
     set({ loading: true });
     logout(reqData)
       .then((response) => {
+        CookieService.removeCookie(constants.token.ACCESS_TOKEN);
         set({ authData: response.data, loading: false, success: true });
       })
       .catch((err: AxiosError) => {

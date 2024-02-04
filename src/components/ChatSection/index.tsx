@@ -4,26 +4,19 @@ import { useEffect, useState } from "react";
 import ChatSectionContent from "./ChatSectionContent";
 import ChatSectionFooter from "./ChatSectionFooter";
 import ChatSectionHeader from "./ChatSectionHeader";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
-import { addChatMessageData } from "@/redux/features/chatMessage/chatMessageSlice";
 import Cookies from "js-cookie";
 import { useSocket } from "@/context/Socket";
 import constants from "@/constants";
-import { updateChatRoomContactIndex } from "@/redux/features/chatRoom/chatRoomSlice";
 
 const ChatSection = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  const dispatch = useAppDispatch();
+  const dispatch = null;
   const currentUserId = Cookies.get("currentUserId");
   const token = Cookies.get("meetspace_access_token");
   const globalSocket = useSocket();
-  const chatRoomId = useAppSelector(
-    (state) => state.chatMessageReducer.receiverUserId
-  );
-  const receiverUser = useAppSelector(
-    (state) => state.chatRoomReducer.receiverUser
-  );
+  const chatRoomId = null;
+  const receiverUser = null;
   const web_socket_url = `${process.env.NEXT_PUBLIC_WS_API_BASE_URL}/v1/chat/${chatRoomId}?token=${token}`;
 
   const handlEvent = async (data: string) => {
@@ -31,8 +24,8 @@ const ChatSection = () => {
       const message = JSON.parse(data);
       console.log("chat ws message:- ", message);
       if (message.event === constants.event.CHAT_MESSAGE_SENT) {
-        dispatch(addChatMessageData(message.data));
-        dispatch(updateChatRoomContactIndex(receiverUser));
+        // dispatch(addChatMessageData(message.data));
+        // dispatch(updateChatRoomContactIndex(receiverUser));
       }
     } catch (err) {
       console.log(err);

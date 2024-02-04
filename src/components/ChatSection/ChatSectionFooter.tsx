@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Send } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useAppSelector } from "@/hooks/useStoreHook";
 import constants from "../../constants";
 import { v4 as uuidv4 } from "uuid";
 
@@ -14,13 +13,9 @@ interface ChatSectionFooterProps {
 
 const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
   const [msgData, setMsgData] = useState("");
-  const receiverUser = useAppSelector(
-    (state) => state.chatRoomReducer.receiverUser
-  );
-  const currentUser = useAppSelector((state) => state.userReducer.currentUser);
-  const singleChatRoomData = useAppSelector(
-    (state) => state.chatRoomReducer.singleChatRoomData
-  );
+  const receiverUser = null;
+  const currentUser = null;
+  const singleChatRoomData = null;
 
   const sendMessage = () => {
     if (socket) {

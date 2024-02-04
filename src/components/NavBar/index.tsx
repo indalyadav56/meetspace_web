@@ -1,11 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Button } from "../ui/button";
 import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { Button } from "../ui/button";
 import SearchUser from "../SearchUser";
 import UserAvatar from "../UserAvatar";
-import { useRouter } from "next/navigation";
 import DialogBox from "../DialogBox";
 import {
   DropdownMenu,
@@ -16,7 +20,6 @@ import {
 } from "../ui/dropdown-menu";
 import CookieService from "@/lib/cookies";
 import constants from "@/constants";
-import { jwtDecode } from "jwt-decode";
 import useAuthStore from "@/store/authStore";
 import useUserStore from "@/store/userStore";
 
@@ -27,7 +30,7 @@ const NavBar = () => {
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
     null
   );
-  const { logoutUser } = useUserStore();
+  const { currentUser, getUserProfile, updateUser, success } = useUserStore();
   const { logoutUser } = useAuthStore();
   const router = useRouter();
   const fileRef = useRef();
@@ -39,10 +42,11 @@ const NavBar = () => {
     "/profile/" +
     currentUser?.profile_pic?.temp_name;
 
+  const notify = (msg: string) => toast(msg);
+
   const handleLogout = () => {
-    CookieService.removeCookie(constants.token.ACCESS_TOKEN);
-    router.push("/login");
     logoutUser();
+    router.push("/login");
   };
 
   const handleFileUpload = () => {
@@ -80,6 +84,7 @@ const NavBar = () => {
     const formData = new FormData();
     if (selectedFile) {
       formData.append("profile_pic", selectedFile);
+      updateUser(formData);
       // dispatch(updateUser(formData)).then((response) => {
       //   if (response.payload.status_code === 200) {
       //     // SHOW TOASTS
@@ -89,124 +94,138 @@ const NavBar = () => {
     }
   };
 
+  useEffect(() => {
+    if (success) {
+      setOpen(false);
+    }
+  }, [success]);
+
+  useEffect(() => {
+    getUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <nav className="h-12 w-full flex items-center justify-between bg-red-400 pl-4 pr-4">
-      <h1 className="text-white text-xl font-bold">MeetSpace</h1>
-      <div className="w-2/4">
-        <SearchUser />
-      </div>
-      <div className="flex gap-1 items-center">
-        <div>
-          {/* menu */}
-          <DropdownMenu open={showUserMenu} onOpenChange={setShowUserMenu}>
-            <DropdownMenuTrigger asChild>
-              <div>
-                <UserAvatar
-                  size="sm"
-                  isOnline={true}
-                  imgSrc={userProfilePath}
-                />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-96 h-48 p-4 text-sm">
-              <div className="flex gap-4">
-                <UserAvatar
-                  imgSrc={userProfilePath}
-                  isOnline={currentUser?.is_active}
-                  onClick={() => setOpen(true)}
-                />
-                <div className="flex-1 flex flex-col">
-                  <div>
-                    <h1 className="font-bold">
-                      {currentUser?.first_name + " " + currentUser?.last_name}
-                    </h1>
-                    <h1>{currentUser?.email}</h1>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <div className="flex items-center gap-1 my-2 text-sm cursor-pointer">
-                        Available <Check size={10} />
-                      </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-                      <div className="mt-2 p-1 text-sm hover:bg-gray-100 cursor-pointer">
-                        Manage Account
-                      </div>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-                      <div className="mt-2 p-1 text-sm hover:bg-gray-100 cursor-pointer">
-                        Manage Account
-                      </div>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-              <DropdownMenuSeparator />
-              <div className="mt-2 p-2 hover:bg-gray-100 cursor-pointer">
-                Manage Account
-              </div>
-              <DropdownMenuSeparator />
-              <div
-                className="p-2  hover:bg-gray-100 cursor-pointer"
-                onClick={handleLogout}
-              >
-                Logout
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* upload profile */}
-
-          <DialogBox
-            open={open}
-            title="Change your profile picture"
-            handleClose={() => {
-              setShowUserMenu(false);
-              setOpen(false);
-            }}
-            mainContent={
-              <div className="flex items-center">
-                <div className="flex-1 flex flex-col gap-4">
-                  <input
-                    type="file"
-                    hidden
-                    ref={fileRef}
-                    onChange={handleFileInputChange}
-                    accept=".jpg,.jpeg,.png"
-                  />
-                  <Button variant="outline" onClick={handleFileUpload}>
-                    Upload File
-                  </Button>
-                  <Button variant="outline">Remove picture</Button>
-                </div>
-                <div className="flex-1 flex justify-center items-center">
-                  {imagePreview ? (
-                    <UserAvatar imgSrc={imagePreview} size="xl" />
-                  ) : (
-                    <UserAvatar imgSrc={userProfilePath} size="xl" />
-                  )}
-                </div>
-              </div>
-            }
-            footerContent={
-              <div className="flex gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    setOpen(false);
-                  }}
-                >
-                  Close
-                </Button>
-                <Button onClick={handleUploadProfile}>Save</Button>
-              </div>
-            }
-          />
+    <main>
+      <ToastContainer />
+      <nav className="h-12 w-full flex items-center justify-between bg-red-400 pl-4 pr-4">
+        <h1 className="text-white text-xl font-bold">MeetSpace</h1>
+        <div className="w-2/4">
+          <SearchUser />
         </div>
-      </div>
-    </nav>
+        <div className="flex gap-1 items-center">
+          <div>
+            {/* menu */}
+            <DropdownMenu open={showUserMenu} onOpenChange={setShowUserMenu}>
+              <DropdownMenuTrigger asChild>
+                <div>
+                  <UserAvatar
+                    size="sm"
+                    isOnline={true}
+                    imgSrc={userProfilePath}
+                  />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-96 h-48 p-4 text-sm">
+                <div className="flex gap-4">
+                  <UserAvatar
+                    imgSrc={userProfilePath}
+                    isOnline={currentUser?.is_active}
+                    onClick={() => setOpen(true)}
+                  />
+                  <div className="flex-1 flex flex-col">
+                    <div>
+                      <h1 className="font-bold">
+                        {currentUser?.first_name + " " + currentUser?.last_name}
+                      </h1>
+                      <h1>{currentUser?.email}</h1>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <div className="flex items-center gap-1 my-2 text-sm cursor-pointer">
+                          Available <Check size={10} />
+                        </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+                        <div className="mt-2 p-1 text-sm hover:bg-gray-100 cursor-pointer">
+                          Manage Account
+                        </div>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+                        <div className="mt-2 p-1 text-sm hover:bg-gray-100 cursor-pointer">
+                          Manage Account
+                        </div>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <div className="mt-2 p-2 hover:bg-gray-100 cursor-pointer">
+                  Manage Account
+                </div>
+                <DropdownMenuSeparator />
+                <div
+                  className="p-2  hover:bg-gray-100 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* upload profile */}
+
+            <DialogBox
+              open={open}
+              title="Change your profile picture"
+              handleClose={() => {
+                setShowUserMenu(false);
+                setOpen(false);
+              }}
+              mainContent={
+                <div className="flex items-center">
+                  <div className="flex-1 flex flex-col gap-4">
+                    <input
+                      type="file"
+                      hidden
+                      ref={fileRef}
+                      onChange={handleFileInputChange}
+                      accept=".jpg,.jpeg,.png"
+                    />
+                    <Button variant="outline" onClick={handleFileUpload}>
+                      Upload File
+                    </Button>
+                    <Button variant="outline">Remove picture</Button>
+                  </div>
+                  <div className="flex-1 flex justify-center items-center">
+                    {imagePreview ? (
+                      <UserAvatar imgSrc={imagePreview} size="xl" />
+                    ) : (
+                      <UserAvatar imgSrc={userProfilePath} size="xl" />
+                    )}
+                  </div>
+                </div>
+              }
+              footerContent={
+                <div className="flex gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      setOpen(false);
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <Button onClick={handleUploadProfile}>Save</Button>
+                </div>
+              }
+            />
+          </div>
+        </div>
+      </nav>
+    </main>
   );
 };
 

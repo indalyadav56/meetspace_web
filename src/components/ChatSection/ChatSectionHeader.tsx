@@ -2,32 +2,24 @@
 
 import { Button } from "../ui/button";
 import { PhoneCall, Users, Video } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
 import React, { useEffect, useState } from "react";
-import Cookies from "../../../node_modules/@types/js-cookie";
 import DrawerBox from "../DrawerBox";
-import Link from "next/link";
 import UserAvatar from "../UserAvatar";
-import { getChatGroupMember } from "@/redux/features/chatGroup/chatGroupApi";
 import ChatContactList from "../ChatContactList";
 import DialogBox from "../DialogBox";
 import { useSocket } from "@/context/Socket";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
-  const receiverUser = useAppSelector(
-    (state) => state.chatRoomReducer.receiverUser
-  );
-  const groupMembers = useAppSelector(
-    (state) => state.chatGroupReducer.groupMembers
-  );
-  const dispatch = useAppDispatch();
+  const receiverUser = null;
+  const groupMembers = null;
+  const dispatch = null;
   const socket = useSocket();
 
-  useEffect(() => {
-    if (receiverUser?.room_id)
-      dispatch(getChatGroupMember(receiverUser?.room_id));
-  }, [receiverUser]);
+  // useEffect(() => {
+  //   if (receiverUser?.room_id)
+  //     dispatch(getChatGroupMember(receiverUser?.room_id));
+  // }, [receiverUser]);
 
   const handleOnCall = () => {
     socket.send(

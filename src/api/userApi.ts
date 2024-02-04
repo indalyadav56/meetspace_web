@@ -1,10 +1,8 @@
+import CookieService from "@/lib/cookies";
 import axios from "axios";
-import Cookies from "js-cookie";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-const token = Cookies.get("meetspace_access_token");
-
-console.log("token", token);
+const token = CookieService.getCookie("meetspace_access_token");
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -13,7 +11,7 @@ const api = axios.create({
   },
 });
 
-export const updateUser = async (updateData: any) => {
+export const updateUserApi = async (updateData: any) => {
   const response = await api.patch("/v1/users", updateData);
   return response.data;
 };
@@ -25,6 +23,11 @@ export const getAllUsers = async () => {
 
 export const getSingleUser = async (userId: string) => {
   const response = await api.get(`/v1/users/${userId}`);
+  return response.data;
+};
+
+export const getUserProfileApi = async () => {
+  const response = await api.get("/v1/user/profile");
   return response.data;
 };
 
