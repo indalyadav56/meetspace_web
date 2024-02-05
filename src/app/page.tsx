@@ -77,11 +77,9 @@ export default function Home() {
 
   return (
     <main className="w-screen h-screen flex flex-col overflow-hidden">
-      <NavBar />
       <div className="flex-1 h-[calc(100%-48px)] flex">
-        <AppBar />
         <SideBar />
-        {receiverUser && <ChatSection />}
+        <ChatSection />
       </div>
     </main>
   );

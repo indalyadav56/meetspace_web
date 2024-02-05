@@ -11,10 +11,11 @@ type Store = {
   error: Object[] | null;
   message: string | null;
   authData: Object;
+  actionType: "register" | "login" | "logout" | null;
 
   registerUser: (reqData: any) => Promise<any>;
   loginUser: (reqData: any) => Promise<any>;
-  logoutUser: () => Promise<any>;
+  logoutUser: (data: any) => Promise<any>;
   resetForm: () => void;
 };
 
@@ -24,12 +25,18 @@ const useAuthStore = create<Store>()((set) => ({
   error: null,
   message: null,
   authData: {},
+  actionType: null,
 
   registerUser: async (reqData: any) => {
     set({ loading: true });
     register(reqData)
       .then((response) => {
-        set({ authData: response.data, loading: false, success: true });
+        set({
+          authData: response.data,
+          loading: false,
+          success: true,
+          actionType: "register",
+        });
       })
       .catch((err: AxiosError) => {
         const resp = err.response?.data;
@@ -41,7 +48,12 @@ const useAuthStore = create<Store>()((set) => ({
     set({ loading: true });
     login(reqData)
       .then((response) => {
-        set({ authData: response.data, loading: false, success: true });
+        set({
+          authData: response.data,
+          loading: false,
+          success: true,
+          actionType: "login",
+        });
       })
       .catch((err: AxiosError) => {
         const resp = err.response?.data;
@@ -54,7 +66,12 @@ const useAuthStore = create<Store>()((set) => ({
     logout(reqData)
       .then((response) => {
         CookieService.removeCookie(constants.token.ACCESS_TOKEN);
-        set({ authData: response.data, loading: false, success: true });
+        set({
+          authData: response.data,
+          loading: false,
+          success: true,
+          actionType: "logout",
+        });
       })
       .catch((err: AxiosError) => {
         const resp = err.response?.data;

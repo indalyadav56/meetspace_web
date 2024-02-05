@@ -24,8 +24,15 @@ import CookieService from "@/lib/cookies";
 import constants from "@/constants";
 
 const RegisterForm = () => {
-  const { registerUser, loading, error, message, success, authData } =
-    useAuthStore();
+  const {
+    registerUser,
+    loading,
+    error,
+    message,
+    success,
+    authData,
+    actionType,
+  } = useAuthStore();
   const router = useRouter();
   const notify = (msg: string) => toast(msg);
 
@@ -69,10 +76,15 @@ const RegisterForm = () => {
   }, [error, message]);
 
   useEffect(() => {
-    if (success) {
+    console.log("register", actionType);
+    if (success && actionType == "register") {
       CookieService.setCookie(
         constants.token.ACCESS_TOKEN,
         authData.data.token.access
+      );
+      CookieService.setCookie(
+        constants.token.REFRESH_TOKEN,
+        authData.data.token.refresh
       );
       router.push("/");
     }

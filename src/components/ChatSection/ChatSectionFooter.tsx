@@ -13,8 +13,6 @@ interface ChatSectionFooterProps {
 
 const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
   const [msgData, setMsgData] = useState("");
-  const receiverUser = null;
-  const currentUser = null;
   const singleChatRoomData = null;
 
   const sendMessage = () => {
@@ -25,9 +23,7 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
           data: {
             id: uuidv4(),
             content: msgData,
-            sender: currentUser,
-            room_id: singleChatRoomData?.id,
-            receiver_user: receiverUser,
+            room_id: "76399d99-d59b-469b-a149-66313cd7d9b6",
           },
         })
       );

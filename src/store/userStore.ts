@@ -43,7 +43,7 @@ const useUserStore = create<Store>()((set) => ({
   },
 
   updateUser: async (updateData: any) => {
-    set({ loading: true, success: false, error: null }); // Reset success and error states for updateUser
+    set({ loading: true, success: false, error: null });
     updateUserApi(updateData)
       .then((response) => {
         set({ currentUser: response.data, loading: false, success: true });

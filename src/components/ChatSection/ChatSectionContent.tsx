@@ -1,5 +1,3 @@
-"use client";
-
 import ChatMessageList from "../ChatMessageList";
 
 const ChatSectionContent = () => {

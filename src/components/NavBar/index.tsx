@@ -1,20 +1,17 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Check } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { Button } from "../ui/button";
-import SearchUser from "../SearchUser";
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
@@ -22,9 +19,11 @@ import CookieService from "@/lib/cookies";
 import constants from "@/constants";
 import useAuthStore from "@/store/authStore";
 import useUserStore from "@/store/userStore";
+import AddGroupForm from "../AddGroupForm";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
+  const [openGroupDialog, setOpenGroupDialog] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
@@ -45,7 +44,9 @@ const NavBar = () => {
   const notify = (msg: string) => toast(msg);
 
   const handleLogout = () => {
-    logoutUser();
+    logoutUser({
+      refresh_token: CookieService.getCookie(constants.token.REFRESH_TOKEN),
+    });
     router.push("/login");
   };
 
@@ -69,16 +70,16 @@ const NavBar = () => {
     setSelectedFile(file);
   };
 
-  useEffect(() => {
-    const accessToken = CookieService.getCookie(constants.token.ACCESS_TOKEN);
-    if (accessToken) {
-      const decoded = jwtDecode(accessToken);
-      if (decoded?.user_id) {
-        // dispatch(getSingleUser(decoded?.user_id));
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   const accessToken = CookieService.getCookie(constants.token.ACCESS_TOKEN);
+  //   if (accessToken) {
+  //     const decoded = jwtDecode(accessToken);
+  //     if (decoded?.user_id) {
+  //       // dispatch(getSingleUser(decoded?.user_id));
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const handleUploadProfile = () => {
     const formData = new FormData();
@@ -95,6 +96,7 @@ const NavBar = () => {
   };
 
   useEffect(() => {
+    console.log("uploadProfile", success);
     if (success) {
       setOpen(false);
     }
@@ -106,27 +108,22 @@ const NavBar = () => {
   }, []);
 
   return (
-    <main>
+    <main className="w-full h-16 p-4">
       <ToastContainer />
-      <nav className="h-12 w-full flex items-center justify-between bg-red-400 pl-4 pr-4">
-        <h1 className="text-white text-xl font-bold">MeetSpace</h1>
-        <div className="w-2/4">
-          <SearchUser />
-        </div>
-        <div className="flex gap-1 items-center">
+      <nav className="">
+        <div className="flex gap-1 justify-between">
+          <UserAvatar size="md" isOnline={true} imgSrc={userProfilePath} />
           <div>
             {/* menu */}
             <DropdownMenu open={showUserMenu} onOpenChange={setShowUserMenu}>
               <DropdownMenuTrigger asChild>
                 <div>
-                  <UserAvatar
-                    size="sm"
-                    isOnline={true}
-                    imgSrc={userProfilePath}
-                  />
+                  <Button size="icon">
+                    <MoreVertical />
+                  </Button>
                 </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-96 h-48 p-4 text-sm">
+              <DropdownMenuContent className="text-sm">
                 <div className="flex gap-4">
                   <UserAvatar
                     imgSrc={userProfilePath}
@@ -140,25 +137,16 @@ const NavBar = () => {
                       </h1>
                       <h1>{currentUser?.email}</h1>
                     </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <div className="flex items-center gap-1 my-2 text-sm cursor-pointer">
-                          Available <Check size={10} />
-                        </div>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-                        <div className="mt-2 p-1 text-sm hover:bg-gray-100 cursor-pointer">
-                          Manage Account
-                        </div>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-                        <div className="mt-2 p-1 text-sm hover:bg-gray-100 cursor-pointer">
-                          Manage Account
-                        </div>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </div>
+                </div>
+                <DropdownMenuSeparator />
+                <div
+                  className="mt-2 p-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    setOpenGroupDialog(true);
+                  }}
+                >
+                  Create Group
                 </div>
                 <DropdownMenuSeparator />
                 <div className="mt-2 p-2 hover:bg-gray-100 cursor-pointer">
@@ -221,6 +209,14 @@ const NavBar = () => {
                   <Button onClick={handleUploadProfile}>Save</Button>
                 </div>
               }
+            />
+
+            {/* add group */}
+            <DialogBox
+              open={openGroupDialog}
+              handleClose={() => setOpenGroupDialog(false)}
+              title="Add Group"
+              mainContent={<AddGroupForm />}
             />
           </div>
         </div>

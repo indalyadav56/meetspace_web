@@ -23,7 +23,7 @@ import CookieService from "@/lib/cookies";
 import constants from "@/constants";
 
 const LoginForm = () => {
-  const { loginUser, resetForm, loading, error, message, success, authData } =
+  const { loginUser, loading, error, message, success, authData, actionType } =
     useAuthStore();
 
   const router = useRouter();
@@ -65,10 +65,14 @@ const LoginForm = () => {
   }, [error, message]);
 
   useEffect(() => {
-    if (success) {
+    if (success && actionType == "login") {
       CookieService.setCookie(
         constants.token.ACCESS_TOKEN,
         authData.data.token.access
+      );
+      CookieService.setCookie(
+        constants.token.REFRESH_TOKEN,
+        authData.data.token.refresh
       );
       router.push("/");
     }
@@ -79,7 +83,11 @@ const LoginForm = () => {
     <main>
       <ToastContainer />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          method="post"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8"
+        >
           <FormField
             control={form.control}
             name="email"

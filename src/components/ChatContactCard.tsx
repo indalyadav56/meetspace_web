@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import UserAvatar from "./UserAvatar";
 import { Dot, MoreHorizontal } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface UserAndGroupCardProps {
   data: {
@@ -70,7 +71,9 @@ const ChatContactCard: React.FC<UserAndGroupCardProps> = (props) => {
           )}
         </div>
 
-        <MoreHorizontal />
+        <Button size="icon" onClick={() => alert("hello")}>
+          <MoreHorizontal />
+        </Button>
         {/* {data.message_unseen_count ? (
           <Badge variant="destructive">{data.message_unseen_count}</Badge>
         ) : null} */}
