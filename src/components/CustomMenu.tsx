@@ -12,26 +12,26 @@ import {
 } from "./ui/dropdown-menu";
 
 const CustomMenu = () => {
-  const dialogRef = useRef(null);
+  // const dialogRef = useRef(null);
 
   const [dialgoOpen, setDialogOpen] = useState(false);
 
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      // Close the dialog if click occurs outside the dialog
-      if (dialogRef.current && !dialogRef.current.contains(event.target)) {
-        dialogRef.current.hidden = true;
-      }
-    };
+  // useEffect(() => {
+  //   const handleOutsideClick = (event: any) => {
+  //     // Close the dialog if click occurs outside the dialog
+  //     if (dialogRef.current && !dialogRef.current?.contains(event.target)) {
+  //       dialogRef.current.hidden = true;
+  //     }
+  //   };
 
-    // Add event listener to detect outside clicks
-    document.addEventListener("mousedown", handleOutsideClick);
+  //   // Add event listener to detect outside clicks
+  //   document.addEventListener("mousedown", handleOutsideClick);
 
-    return () => {
-      // Clean up the event listener on component unmount
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
+  //   return () => {
+  //     // Clean up the event listener on component unmount
+  //     document.removeEventListener("mousedown", handleOutsideClick);
+  //   };
+  // }, []);
 
   return (
     <>
@@ -47,16 +47,16 @@ const CustomMenu = () => {
       <DialogBox
         open={dialgoOpen}
         handleClose={() => {
-          dialogRef.current.hidden = true;
+          // dialogRef.current.hidden = true;
           setDialogOpen(false);
         }}
-        headerTitle="Upload picture"
-        middleContent={
+        title="Upload picture"
+        mainContent={
           <div>
             <input type="file" name="UPload profile" />
           </div>
         }
-        bottomContent={<Button onClick={() => {}}>Submit</Button>}
+        footerContent={<Button onClick={() => {}}>Submit</Button>}
       />
     </>
   );

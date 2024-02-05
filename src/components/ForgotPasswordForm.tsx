@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { login } from "@/redux/features/auth/authApi";
 import {
   Form,
   FormControl,
@@ -17,10 +16,8 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { useAppDispatch } from "@/hooks/useStoreHook";
 
 const ForgotPasswordForm = () => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const notify = () => toast("Wow so easy!");
@@ -47,12 +44,12 @@ const ForgotPasswordForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    dispatch(login(values)).then((response) => {
-      notify();
-      if (response.payload.status_code === 200) {
-        router.push("/");
-      }
-    });
+    // dispatch(login(values)).then((response) => {
+    // notify();
+    // if (response.payload.status_code === 200) {
+    // router.push("/");
+    // }
+    // });
   }
 
   return (

@@ -8,7 +8,9 @@ type Store = {
   currentUser: any;
   success: boolean;
   loading: boolean;
+  message: string | null;
   error: Object[] | null;
+
   getAllUsers: () => Promise<any>;
   getUserProfile: () => Promise<any>;
   updateUser: (updateData: any) => Promise<any>;
@@ -20,6 +22,7 @@ const useUserStore = create<Store>()((set) => ({
   success: false,
   loading: false,
   error: null,
+  message: null,
 
   getAllUsers: async () => {
     const users = await getAllUsers();
@@ -36,8 +39,8 @@ const useUserStore = create<Store>()((set) => ({
       .then((response) => {
         set({ currentUser: response.data, loading: false, success: true });
       })
-      .catch((err: AxiosError) => {
-        const resp = err.response?.data;
+      .catch((err: any) => {
+        const resp: any = err.response?.data;
         set({ error: resp?.error, message: resp?.message, loading: false });
       });
   },
@@ -48,8 +51,8 @@ const useUserStore = create<Store>()((set) => ({
       .then((response) => {
         set({ currentUser: response.data, loading: false, success: true });
       })
-      .catch((err: AxiosError) => {
-        const resp = err.response?.data;
+      .catch((err: any) => {
+        const resp: any = err.response?.data;
         set({ error: resp?.error, message: resp?.message, loading: false });
       });
   },

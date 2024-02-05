@@ -64,7 +64,7 @@ const RegisterForm = () => {
   useEffect(() => {
     if (error && message) {
       notify(message);
-      error.forEach((err) => {
+      error.forEach((err: any) => {
         form.setError(err?.field, {
           type: "manual",
           message: err?.message,
@@ -76,7 +76,6 @@ const RegisterForm = () => {
   }, [error, message]);
 
   useEffect(() => {
-    console.log("register", actionType);
     if (success && actionType == "register") {
       CookieService.setCookie(
         constants.token.ACCESS_TOKEN,

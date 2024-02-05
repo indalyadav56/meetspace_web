@@ -51,10 +51,10 @@ const NavBar = () => {
   };
 
   const handleFileUpload = () => {
-    fileRef.current.click();
+    // fileRef?.current?.click();
   };
 
-  const handleFileInputChange = (e) => {
+  const handleFileInputChange = (e: any) => {
     const file = e.target.files[0];
     console.log("file", file);
     // Generate a preview for image files
@@ -177,7 +177,7 @@ const NavBar = () => {
                     <input
                       type="file"
                       hidden
-                      ref={fileRef}
+                      // ref={fileRef}
                       onChange={handleFileInputChange}
                       accept=".jpg,.jpeg,.png"
                     />
@@ -187,11 +187,11 @@ const NavBar = () => {
                     <Button variant="outline">Remove picture</Button>
                   </div>
                   <div className="flex-1 flex justify-center items-center">
-                    {imagePreview ? (
+                    {/* {imagePreview ? (
                       <UserAvatar imgSrc={imagePreview} size="xl" />
                     ) : (
                       <UserAvatar imgSrc={userProfilePath} size="xl" />
-                    )}
+                    )} */}
                   </div>
                 </div>
               }

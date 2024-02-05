@@ -1,4 +1,3 @@
-import { jwtDecode } from "jwt-decode";
 import UserAvatar from "./UserAvatar";
 import CookieService from "@/lib/cookies";
 import constants from "@/constants";
@@ -7,12 +6,12 @@ const ChatMessageCard = ({ item }: any) => {
   let currentUserId = "";
   const accessToken = CookieService.getCookie(constants.token.ACCESS_TOKEN);
 
-  if (accessToken) {
-    const decoded = jwtDecode(accessToken);
-    if (decoded?.user_id) {
-      currentUserId = decoded?.user_id;
-    }
-  }
+  // if (accessToken) {
+  //   const decoded = jwtDecode(accessToken);
+  //   if (decoded?.user_id) {
+  //     currentUserId = decoded?.user_id;
+  //   }
+  // }
 
   return (
     <div className="flex flex-col w-full">
@@ -21,7 +20,7 @@ const ChatMessageCard = ({ item }: any) => {
         <span className="px-2 text-sm">{item.timestamp}</span>
         <hr className="w-full bg-red-800" />
       </div>
-      {item?.chat_message?.map((msg: any, index) => (
+      {item?.chat_message?.map((msg: any, index: number) => (
         <div
           key={index}
           className={`flex flex-wrap max-w-[80%] gap-1 ${

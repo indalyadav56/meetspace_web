@@ -23,11 +23,11 @@ const MenuBarBox: React.FC<MenuBarBoxProps> = (props) => {
       <MenubarMenu>
         <MenubarTrigger asChild>{triggerContent}</MenubarTrigger>
         <MenubarContent>
-          {menuList.map((menu, index) => (
+          {/* {menuList.map((menu, index) => (
             <MenubarItem key={index} onClick={onMenuClick}>
               {menu}
             </MenubarItem>
-          ))}
+          ))} */}
         </MenubarContent>
       </MenubarMenu>
     </Menubar>

@@ -19,7 +19,7 @@ const SideBarHeader = () => {
         room_name: chatGroupData["data"]["room_name"],
       };
       updateChatRoomContact(groupData);
-      setOpen(false);
+      // setOpen(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatGroupData]);

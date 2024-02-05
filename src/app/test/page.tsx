@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 
 const ExamplePage = () => {
   const handleOnClick = () => {
-    const Notification =
-      window.Notification ||
-      window.mozNotification ||
-      window.webkitNotification;
+    const Notification = window.Notification;
+    // ||
+    // window.mozNotification ||
+    // window.webkitNotification;
 
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
@@ -16,8 +16,8 @@ const ExamplePage = () => {
           icon: "chat-icon.png",
           tag: "message",
           badge: "https://example.com/badge.png",
-          vibrate: [500, 100, 500],
-          renotify: true,
+          // vibrate: [500, 100, 500],
+          // renotify: true,
         });
       } else {
         // Handle denied permission

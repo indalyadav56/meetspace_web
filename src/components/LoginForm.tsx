@@ -53,7 +53,7 @@ const LoginForm = () => {
   useEffect(() => {
     if (error && message) {
       notify(message);
-      error.forEach((err) => {
+      error.forEach((err: any) => {
         form.setError(err?.field, {
           type: "manual",
           message: err?.message,
@@ -68,11 +68,11 @@ const LoginForm = () => {
     if (success && actionType == "login") {
       CookieService.setCookie(
         constants.token.ACCESS_TOKEN,
-        authData.data.token.access
+        authData?.data?.token?.access
       );
       CookieService.setCookie(
         constants.token.REFRESH_TOKEN,
-        authData.data.token.refresh
+        authData?.data?.token?.refresh
       );
       router.push("/");
     }

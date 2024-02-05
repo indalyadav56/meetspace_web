@@ -10,8 +10,8 @@ const useChatMessageStore = create<Store>()((set) => ({
   chatMessageData: [],
 
   getChatMessageByRoomId: async (roomId: string) => {
-    const res = await getChatMessageByRoomIdApi(roomId);
-    set({ chatMessageData: res.data });
+    const res: any = await getChatMessageByRoomIdApi(roomId);
+    set({ chatMessageData: res.data.data });
   },
 }));
 

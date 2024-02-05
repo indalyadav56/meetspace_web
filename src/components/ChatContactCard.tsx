@@ -22,7 +22,7 @@ interface UserAndGroupCardProps {
   className?: string;
 }
 
-const ChatContactCard: React.FC<UserAndGroupCardProps> = (props) => {
+const ChatContactCard: React.FC<any> = (props) => {
   const userRef = React.useRef(null);
   const { data, onUserClick, className } = props;
 

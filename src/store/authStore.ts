@@ -10,7 +10,7 @@ type Store = {
   loading: boolean;
   error: Object[] | null;
   message: string | null;
-  authData: Object;
+  authData: any;
   actionType: "register" | "login" | "logout" | null;
 
   registerUser: (reqData: any) => Promise<any>;
@@ -38,7 +38,7 @@ const useAuthStore = create<Store>()((set) => ({
           actionType: "register",
         });
       })
-      .catch((err: AxiosError) => {
+      .catch((err: any) => {
         const resp = err.response?.data;
         set({ error: resp?.error, message: resp?.message, loading: false });
       });
@@ -55,7 +55,7 @@ const useAuthStore = create<Store>()((set) => ({
           actionType: "login",
         });
       })
-      .catch((err: AxiosError) => {
+      .catch((err: any) => {
         const resp = err.response?.data;
         set({ error: resp?.error, message: resp?.message, loading: false });
       });
@@ -73,7 +73,7 @@ const useAuthStore = create<Store>()((set) => ({
           actionType: "logout",
         });
       })
-      .catch((err: AxiosError) => {
+      .catch((err: any) => {
         const resp = err.response?.data;
         set({ error: resp?.error, message: resp?.message, loading: false });
       });
