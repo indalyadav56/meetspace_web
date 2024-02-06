@@ -96,7 +96,6 @@ const NavBar = () => {
   };
 
   useEffect(() => {
-    console.log("uploadProfile", success);
     if (success) {
       setOpen(false);
     }
@@ -108,10 +107,10 @@ const NavBar = () => {
   }, []);
 
   return (
-    <main className="w-full h-16 p-4">
+    <main className="w-full h-16 p-2">
       <ToastContainer />
       <nav className="">
-        <div className="flex gap-1 justify-between">
+        <div className="flex justify-between">
           <UserAvatar size="md" isOnline={true} imgSrc={userProfilePath} />
           <div>
             {/* menu */}

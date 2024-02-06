@@ -7,26 +7,24 @@ import ChatSectionHeader from "./ChatSectionHeader";
 import Cookies from "js-cookie";
 import { useSocket } from "@/context/Socket";
 import constants from "@/constants";
+import { useSearchParams } from "next/navigation";
+import useChatMessageStore from "@/store/chatMessageStore";
 
 const ChatSection = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-
+  const { addChatMessage } = useChatMessageStore();
   const token = Cookies.get("meetspace_access_token");
   const globalSocket = useSocket();
+  const param = useSearchParams();
+  const room_id = param.get("room");
 
-  const url = `${
-    process.env.NEXT_PUBLIC_WS_API_BASE_URL
-  }/v1/chat/${"76399d99-d59b-469b-a149-66313cd7d9b6"}?token=${token}`;
-
-  console.log("url", url);
+  const url = `${process.env.NEXT_PUBLIC_WS_API_BASE_URL}/v1/chat/${room_id}?token=${token}`;
 
   const handlEvent = async (data: string) => {
     try {
       const message = JSON.parse(data);
-      console.log("chat ws message:- ", message);
       if (message.event === constants.event.CHAT_MESSAGE_SENT) {
-        // dispatch(addChatMessageData(message.data));
-        // dispatch(updateChatRoomContactIndex(receiverUser));
+        addChatMessage(message.data);
       }
     } catch (err) {
       console.log(err);
@@ -37,13 +35,13 @@ const ChatSection = () => {
     const newSocket = new WebSocket(url);
     setSocket(newSocket);
 
-    newSocket.onopen = (event) => {
-      console.log("connection open", event);
-    };
+    // newSocket.onopen = (event) => {
+    //   console.log("connection open", event);
+    // };
 
-    newSocket.onerror = (event) => {
-      console.log("connection err:====>", event);
-    };
+    // newSocket.onerror = (event) => {
+    //   console.log("connection err:====>", event);
+    // };
 
     newSocket.onmessage = (event) => {
       handlEvent(event.data);

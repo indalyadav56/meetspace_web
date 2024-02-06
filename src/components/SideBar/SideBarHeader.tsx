@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import useChatGroupStore from "@/store/chatGroupStore";
 import useChatRoomStore from "@/store/chatRoomStore";
@@ -13,7 +13,8 @@ const SideBarHeader = () => {
 
   useEffect(() => {
     if (chatGroupData?.data?.status_code === 200) {
-      const groupData: ChatContactItem = {
+      const groupData: ChatContact = {
+        id: "test-id",
         room_id: chatGroupData["data"]["id"],
         is_group: true,
         room_name: chatGroupData["data"]["room_name"],

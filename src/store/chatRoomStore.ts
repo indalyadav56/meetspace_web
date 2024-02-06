@@ -2,13 +2,17 @@ import { create } from "zustand";
 import { getChatRoomContact } from "../api/chatRoomApi";
 
 type Store = {
-  chatRoomContact: ChatContactItem[];
+  chatRoomContact: ChatContact[];
+  singleContactData: any;
+
   getChatRoomContactData: () => Promise<void>;
   updateChatRoomContact: (item: any) => Promise<any>;
+  getSingleContactData: (item: any) => Promise<any>;
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
   chatRoomContact: [],
+  singleContactData: {},
 
   getChatRoomContactData: async () => {
     const responseData = await getChatRoomContact();
@@ -17,28 +21,17 @@ const useChatRoomStore = create<Store>()((set) => ({
     }));
   },
 
-  updateChatRoomContact: async (item: ChatContactItem) =>
+  getSingleContactData: async (item: ChatContact) => {
+    set((state) => ({ singleContactData: item }));
+  },
+
+  updateChatRoomContact: async (item: ChatContact) =>
     set((state) => {
-      let contacts: ChatContactItem[] = [];
+      let contacts: ChatContact[] = [];
       if (state.chatRoomContact) {
         contacts = [...state.chatRoomContact];
-
-        const userIndex = contacts.findIndex((c) => c.user_id === item?.id);
-
-        const chatRoomIndex = contacts.findIndex(
-          (c) => c.room_id === item?.room_id
-        );
-
-        console.log("state itemIndex: item", contacts);
-        console.log("itemIndex: item", item);
-        console.log("userIndex", userIndex);
-        console.log("itemIndex", chatRoomIndex);
-        if (userIndex) {
-          contacts.unshift(item);
-        }
-        if (chatRoomIndex < 0) {
-          contacts.unshift(item);
-        }
+        const index = contacts.findIndex((c) => c.id === item?.id);
+        if (index) contacts.unshift(item);
       } else {
         contacts.unshift(item);
       }

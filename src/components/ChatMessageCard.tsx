@@ -28,7 +28,7 @@ const ChatMessageCard = ({ item }: any) => {
           }`}
         >
           {currentUserId !== msg?.sender.id ? (
-            <UserAvatar isOnline={false} />
+            <UserAvatar size="sm" isOnline={false} />
           ) : null}
           <div className="text-sm bg-blue-500 text-white p-2 rounded-sm break-words my-1">
             {msg?.sender?.first_name} {item?.sender?.last_name}

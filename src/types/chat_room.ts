@@ -4,8 +4,8 @@ interface UpdateUser {
   profile_pic?: File;
 }
 
-interface ChatContactItem {
-  id?: string;
+interface ChatContact {
+  id: string;
   room_id?: string | null;
   room_name?: string | null;
   user_id?: string;
