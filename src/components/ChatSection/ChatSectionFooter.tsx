@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import constants from "../../constants";
+import useChatRoomStore from "@/store/chatRoomStore";
 
 interface ChatSectionFooterProps {
   socket: WebSocket | null;
@@ -17,6 +18,7 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
   const [msgData, setMsgData] = useState("");
   const params = useSearchParams();
   const room_id = params.get("room");
+  const { singleContactData } = useChatRoomStore();
 
   const sendMessage = () => {
     if (socket) {
@@ -27,6 +29,7 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
             id: uuidv4(),
             content: msgData,
             room_id: room_id,
+            receiver_user: singleContactData,
           },
         })
       );
@@ -40,9 +43,10 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
           placeholder="chat..."
           onChange={(e) => setMsgData(e.currentTarget.value)}
           name={msgData}
+          className="h-14 outline-none"
         />
       </div>
-      <Button size="icon" onClick={sendMessage}>
+      <Button size="icon" onClick={sendMessage} className="h-14 w-14">
         <Send />
       </Button>
     </div>

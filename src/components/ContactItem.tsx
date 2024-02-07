@@ -24,9 +24,7 @@ interface UserAndGroupCardProps {
 
 const ChatContactCard: React.FC<any> = (props) => {
   const userRef = React.useRef(null);
-  const { data, onUserClick, className } = props;
-
-  const dispatch = null;
+  const { data, onUserClick, className, isVisible } = props;
 
   const userProfilePath = null;
   //   process.env.NEXT_PUBLIC_API_BASE_URL +
@@ -50,10 +48,11 @@ const ChatContactCard: React.FC<any> = (props) => {
   return (
     <div
       ref={userRef}
-      className={`"h-16 w-full flex gap-2 items-center p-4 hover:bg-blue-50 ${className} text-xs"`}
+      className={`"h-16 w-full flex gap-2 items-center p-4 ${
+        isVisible && "bg-red-500"
+      }  hover:bg-blue-50 ${className} text-xs"`}
       onClick={onUserClick}
       onKeyDown={handleKeyPress}
-      tabIndex={0}
     >
       {data.message_unseen_count ? <Dot color="red" /> : null}
       <UserAvatar

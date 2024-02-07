@@ -8,12 +8,12 @@ import UserAvatar from "../UserAvatar";
 import ContactList from "../ContactList";
 import DialogBox from "../DialogBox";
 import useChatRoomStore from "@/store/chatRoomStore";
+import useChatGroupStore from "@/store/chatGroupStore";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
   const { singleContactData } = useChatRoomStore();
-
-  console.log("singleContactData", singleContactData);
+  const { getChatGroupMembers, chatGroupMembers } = useChatGroupStore();
 
   return (
     <main>
@@ -33,11 +33,15 @@ const ChatSectionHeader = () => {
           {singleContactData?.is_group && (
             <DrawerBox
               triggerContent={
-                <Button variant="outline" size="icon">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => getChatGroupMembers(singleContactData.room_id)}
+                >
                   <Users className="h-4 w-4" />
                 </Button>
               }
-              content={<ContactList data={[]} />}
+              content={<ContactList data={chatGroupMembers} />}
             />
           )}
         </div>

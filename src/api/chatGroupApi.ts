@@ -19,14 +19,10 @@ const api = axios.create({
   },
 });
 
-export const createChatGroupApi = async (
-  data: AddChatGroup
-): Promise<AxiosResponse> => {
+export const createChatGroupApi = async (data: AddChatGroup) => {
   return api.post("/v1/chat/groups", data);
 };
 
-export const getChatGroupMembers = async (
-  roomId: string
-): Promise<AxiosResponse<ChatGroupMember[]>> => {
+export const getChatGroupMembersApi = async (roomId: string) => {
   return api.get(`/v1/chat/group/members/${roomId}`);
 };

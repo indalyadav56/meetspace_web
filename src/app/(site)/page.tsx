@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useSocket } from "@/context/Socket";
 import Cookies from "js-cookie";
 import NavBar from "@/components/NavBar";
-import constants from "../constants";
+import constants from "../../constants";
 import useUserStore from "@/store/userStore";
 
 export default function Home() {

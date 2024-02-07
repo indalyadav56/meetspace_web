@@ -16,8 +16,9 @@ const ChatSection = () => {
   const token = Cookies.get("meetspace_access_token");
   const globalSocket = useSocket();
   const param = useSearchParams();
-  const room_id = param.get("room");
+  const room_id = param.get("conversation");
 
+  console.log("room_id:->", room_id);
   const url = `${process.env.NEXT_PUBLIC_WS_API_BASE_URL}/v1/chat/${room_id}?token=${token}`;
 
   const handlEvent = async (data: string) => {
@@ -35,15 +36,16 @@ const ChatSection = () => {
     const newSocket = new WebSocket(url);
     setSocket(newSocket);
 
-    // newSocket.onopen = (event) => {
-    //   console.log("connection open", event);
-    // };
+    newSocket.onopen = (event) => {
+      console.log("connection open", event);
+    };
 
-    // newSocket.onerror = (event) => {
-    //   console.log("connection err:====>", event);
-    // };
+    newSocket.onerror = (event) => {
+      console.log("connection err:====>", event);
+    };
 
     newSocket.onmessage = (event) => {
+      console.log("on chatmessagge=>", event.data);
       handlEvent(event.data);
     };
 
