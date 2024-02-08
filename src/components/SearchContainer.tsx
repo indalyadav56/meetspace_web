@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 
 import { Input } from "./ui/input";
-import ContactList from "./ContactList";
 import useUserStore from "@/store/userStore";
+import UserList from "./UserList";
 
 const SearchContainer: React.FC = () => {
   const [isFocused, setIsFocused] = React.useState(false);
@@ -30,7 +30,7 @@ const SearchContainer: React.FC = () => {
       </div>
       {isFocused && (
         <div className="absolute w-full max-h-96 mt-16 bg-gray-400 rounded-sm z-50 overflow-y-auto overflow-x-hidden">
-          <ContactList data={users} setIsFocused={setIsFocused} />
+          <UserList data={users} setIsFocused={setIsFocused} />
         </div>
       )}
     </div>

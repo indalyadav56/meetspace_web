@@ -20,10 +20,12 @@ import constants from "@/constants";
 import useAuthStore from "@/store/authStore";
 import useUserStore from "@/store/userStore";
 import AddGroupForm from "../AddGroupForm";
+import ManageAccount from "../ManageAccount";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
-  const [openGroupDialog, setOpenGroupDialog] = useState(false);
+  const [accountDialog, setAccountDialog] = useState<boolean>(false);
+  const [openGroupDialog, setOpenGroupDialog] = useState<boolean>(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
@@ -75,7 +77,7 @@ const NavBar = () => {
   //   if (accessToken) {
   //     const decoded = jwtDecode(accessToken);
   //     if (decoded?.user_id) {
-  //       // dispatch(getSingleUser(decoded?.user_id));
+  //       // dispatch(getSingleUser(ManageAccountdecoded?.user_id));
   //     }
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,7 +113,12 @@ const NavBar = () => {
       <ToastContainer />
       <nav className="">
         <div className="flex justify-between">
-          <UserAvatar size="md" isOnline={true} imgSrc={userProfilePath} />
+          <UserAvatar
+            size="md"
+            isOnline={true}
+            imgSrc={userProfilePath}
+            onClick={() => setAccountDialog(true)}
+          />
           <div>
             {/* menu */}
             <DropdownMenu open={showUserMenu} onOpenChange={setShowUserMenu}>
@@ -148,7 +155,10 @@ const NavBar = () => {
                   Create Group
                 </div>
                 <DropdownMenuSeparator />
-                <div className="mt-2 p-2 hover:bg-gray-100 cursor-pointer">
+                <div
+                  className="mt-2 p-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => setAccountDialog(true)}
+                >
                   Manage Account
                 </div>
                 <DropdownMenuSeparator />
@@ -220,6 +230,12 @@ const NavBar = () => {
           </div>
         </div>
       </nav>
+
+      {/* manage account */}
+      <ManageAccount
+        open={accountDialog}
+        handleClose={() => setAccountDialog(false)}
+      />
     </main>
   );
 };

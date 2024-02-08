@@ -2,23 +2,22 @@
 
 import React, { useState } from "react";
 import { Send } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
-import { useSearchParams } from "next/navigation";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import constants from "../../constants";
+import { getUserIdFromToken } from "../../lib/jwt";
 import useChatRoomStore from "@/store/chatRoomStore";
 
-interface ChatSectionFooterProps {
+type ChatSectionFooterProps = {
   socket: WebSocket | null;
-}
+};
 
 const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
-  const [msgData, setMsgData] = useState("");
-  const params = useSearchParams();
-  const room_id = params.get("room");
+  const [msgData, setMsgData] = useState<string>("");
   const { singleContactData } = useChatRoomStore();
+
+  let currentUserId = getUserIdFromToken();
 
   const sendMessage = () => {
     if (socket) {
@@ -26,10 +25,16 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
         JSON.stringify({
           event: constants.event.CHAT_MESSAGE_SENT,
           data: {
-            id: uuidv4(),
             content: msgData,
-            room_id: room_id,
-            receiver_user: singleContactData,
+            receiver_user: {
+              id: singleContactData.user_id,
+              first_name: singleContactData.first_name,
+              last_name: singleContactData.last_name,
+              email: singleContactData.email,
+            },
+            sender_user: {
+              id: currentUserId,
+            },
           },
         })
       );

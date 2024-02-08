@@ -1,10 +1,13 @@
 import { create } from "zustand";
+
 import { getChatRoomContact, getChatRoomByUserIdApi } from "../api/chatRoomApi";
+import { ChatContact } from "@/types/chat_room";
 
 type Store = {
   chatRoomContact: ChatContact[];
-  singleContactData: any;
+  singleContactData: ChatContact;
   chatRoomData: any;
+  chatPreview: boolean;
 
   getChatRoomContactData: () => Promise<void>;
   updateChatRoomContact: (item: any) => Promise<any>;
@@ -14,8 +17,13 @@ type Store = {
 
 const useChatRoomStore = create<Store>()((set) => ({
   chatRoomContact: [],
-  singleContactData: {},
+  singleContactData: {
+    room_id: "",
+    user_id: "",
+    email: "",
+  },
   chatRoomData: [],
+  chatPreview: false,
 
   getChatRoomContactData: async () => {
     const responseData = await getChatRoomContact();
@@ -25,33 +33,38 @@ const useChatRoomStore = create<Store>()((set) => ({
   },
 
   getSingleContactData: async (item: ChatContact) => {
-    set((state) => ({ singleContactData: item }));
+    set((state) => ({ singleContactData: item, chatPreview: true }));
   },
 
-  updateChatRoomContact: async (item: ChatContact) =>
+  updateChatRoomContact: async (item: ChatContact) => {
     set((state) => {
-      let contacts: ChatContact[] = [];
-
       if (state.chatRoomContact) {
-        contacts = [...state.chatRoomContact];
-        const index = contacts.findIndex((c) => {
-          if (!c.room_id && c.id === item.id) return c;
-        });
-        if (index) contacts.unshift(item);
-      } else {
-        contacts.unshift(item);
+        return {
+          chatRoomContact: [
+            item,
+            ...state.chatRoomContact.filter((i) => i.user_id !== item.user_id),
+          ],
+          chatRoomData: [],
+          singleContactData: item,
+        };
       }
       return {
-        chatRoomContact: contacts,
+        chatRoomContact: [item],
+        chatRoomData: [],
+        singleContactData: item,
       };
-    }),
+    });
+  },
 
   getChatRoomByUserId: async (user_id: string) => {
     getChatRoomByUserIdApi(user_id)
       .then((resp) => {
         set((state) => ({ chatRoomData: resp.data.data }));
+        return resp.data.data;
       })
-      .catch((err) => {});
+      .catch((err) => {
+        return err;
+      });
   },
 }));
 

@@ -6,7 +6,7 @@ import { Dot, MoreHorizontal } from "lucide-react";
 import UserAvatar from "./UserAvatar";
 import { Button } from "./ui/button";
 
-const ChatContactCard: React.FC<any> = (props) => {
+export default function UserItem(props: any) {
   const userRef = React.useRef(null);
   const { data, onUserClick, className, isVisible } = props;
 
@@ -53,9 +53,14 @@ const ChatContactCard: React.FC<any> = (props) => {
             <h1>{data.email}</h1>
           )}
         </div>
+
+        <Button size="icon" onClick={() => alert("hello")}>
+          <MoreHorizontal />
+        </Button>
+        {/* {data.message_unseen_count ? (
+          <Badge variant="destructive">{data.message_unseen_count}</Badge>
+        ) : null} */}
       </div>
     </div>
   );
-};
-
-export default ChatContactCard;
+}

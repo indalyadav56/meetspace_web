@@ -1,4 +1,3 @@
-import React from "react";
 import ChatMessageCard from "./ChatMessageCard";
 
 const ChatMessageList = ({ messages }: any) => {

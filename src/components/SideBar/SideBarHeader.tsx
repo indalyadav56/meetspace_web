@@ -8,22 +8,22 @@ import SearchContainer from "../SearchContainer";
 import NavBar from "../NavBar";
 
 const SideBarHeader = () => {
-  const { chatGroupData } = useChatGroupStore();
-  const { updateChatRoomContact } = useChatRoomStore();
+  // const { chatGroupData } = useChatGroupStore();
+  // const { updateChatRoomContact } = useChatRoomStore();
 
-  useEffect(() => {
-    if (chatGroupData?.data?.status_code === 200) {
-      const groupData: ChatContact = {
-        id: "test-id",
-        room_id: chatGroupData["data"]["id"],
-        is_group: true,
-        room_name: chatGroupData["data"]["room_name"],
-      };
-      updateChatRoomContact(groupData);
-      // setOpen(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatGroupData]);
+  // useEffect(() => {
+  //   if (chatGroupData?.data?.status_code === 200) {
+  //     const groupData: ChatContact = {
+  //       id: "test-id",
+  //       room_id: chatGroupData["data"]["id"],
+  //       is_group: true,
+  //       room_name: chatGroupData["data"]["room_name"],
+  //     };
+  //     updateChatRoomContact(groupData);
+  //     // setOpen(false);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [chatGroupData]);
 
   return (
     <div className="w-full flex flex-col justify-between border-b-2 items-center">

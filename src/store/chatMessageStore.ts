@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { v4 as uuidv4 } from "uuid";
+
 import { getChatMessageByRoomIdApi } from "@/api/chatMessageApi";
 
 type Store = {
@@ -6,6 +8,7 @@ type Store = {
 
   getChatMessageByRoomId: (roomId: string) => Promise<any>;
   addChatMessage: (data: any) => Promise<any>;
+  removeCurrentMsgDataState: () => Promise<any>;
 };
 
 const useChatMessageStore = create<Store>()((set) => ({
@@ -13,23 +16,32 @@ const useChatMessageStore = create<Store>()((set) => ({
 
   addChatMessage: async (data: any) => {
     set((state) => {
-      const chatMessageData = [...state.chatMessageData];
+      if (state.chatMessageData) {
+        const chatMessageData = [...state.chatMessageData];
+        let lastObject = chatMessageData[chatMessageData.length - 1];
 
-      let lastObject = chatMessageData[chatMessageData.length - 1];
-
-      if (lastObject && Array.isArray(lastObject.chat_message)) {
-        lastObject.chat_message.push({
-          ...data,
-          sender: {
-            id: "test",
-            first_name: "test",
-            last_name: "test",
-          },
-        });
+        if (lastObject && Array.isArray(lastObject.chat_message)) {
+          lastObject.chat_message.push({
+            ...data,
+            id: uuidv4(),
+          });
+        }
+        return {
+          chatMessageData: chatMessageData,
+        };
       }
-
       return {
-        chatMessageData: chatMessageData,
+        chatMessageData: [
+          {
+            timestamp: "Today",
+            chat_message: [
+              {
+                ...data,
+                id: uuidv4(),
+              },
+            ],
+          },
+        ],
       };
     });
   },
@@ -37,6 +49,9 @@ const useChatMessageStore = create<Store>()((set) => ({
   getChatMessageByRoomId: async (roomId: string) => {
     const res: any = await getChatMessageByRoomIdApi(roomId);
     set({ chatMessageData: res.data.data });
+  },
+  removeCurrentMsgDataState: async () => {
+    set({ chatMessageData: [] });
   },
 }));
 

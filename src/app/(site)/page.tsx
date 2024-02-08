@@ -1,21 +1,24 @@
 "use client";
 
-import AppBar from "@/components/AppBar";
+import { useEffect } from "react";
+
 import ChatSection from "@/components/ChatSection";
 import SideBar from "@/components/SideBar";
-import { useEffect } from "react";
 import { useSocket } from "@/context/Socket";
-import Cookies from "js-cookie";
-import NavBar from "@/components/NavBar";
 import constants from "../../constants";
+import { getUserIdFromToken } from "../../lib/jwt";
 import useUserStore from "@/store/userStore";
+import ChatPreview from "@/components/ChatPreview";
+import useChatRoomStore from "@/store/chatRoomStore";
 
 export default function Home() {
   const socket = useSocket();
-  const currentUserId = Cookies.get("currentUserId");
+
+  const currentUserId = getUserIdFromToken();
   const receiverUser = null;
 
   const { getAllUsers } = useUserStore();
+  const { chatPreview } = useChatRoomStore();
 
   async function showNotification(title: string, message: string) {
     if (!("Notification" in window)) {
@@ -79,7 +82,7 @@ export default function Home() {
     <main className="w-screen h-screen flex flex-col overflow-hidden">
       <div className="flex-1 h-[calc(100%-48px)] flex">
         <SideBar />
-        <ChatSection />
+        {chatPreview ? <ChatSection /> : <ChatPreview />}
       </div>
     </main>
   );

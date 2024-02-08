@@ -1,14 +1,15 @@
 "use client";
+
 import React, { useState } from "react";
 import { Users } from "lucide-react";
 
 import { Button } from "../ui/button";
 import DrawerBox from "../DrawerBox";
 import UserAvatar from "../UserAvatar";
-import ContactList from "../ContactList";
 import DialogBox from "../DialogBox";
 import useChatRoomStore from "@/store/chatRoomStore";
 import useChatGroupStore from "@/store/chatGroupStore";
+import UserList from "../UserList";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
@@ -41,7 +42,7 @@ const ChatSectionHeader = () => {
                   <Users className="h-4 w-4" />
                 </Button>
               }
-              content={<ContactList data={chatGroupMembers} />}
+              content={<UserList data={chatGroupMembers} />}
             />
           )}
         </div>

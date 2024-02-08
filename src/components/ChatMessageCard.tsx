@@ -1,17 +1,8 @@
 import UserAvatar from "./UserAvatar";
-import CookieService from "@/lib/cookies";
-import constants from "@/constants";
+import { getUserIdFromToken } from "@/lib/jwt";
 
 const ChatMessageCard = ({ item }: any) => {
-  let currentUserId = "";
-  const accessToken = CookieService.getCookie(constants.token.ACCESS_TOKEN);
-
-  // if (accessToken) {
-  //   const decoded = jwtDecode(accessToken);
-  //   if (decoded?.user_id) {
-  //     currentUserId = decoded?.user_id;
-  //   }
-  // }
+  let currentUserId = getUserIdFromToken();
 
   return (
     <div className="flex flex-col w-full">
@@ -20,18 +11,18 @@ const ChatMessageCard = ({ item }: any) => {
         <span className="px-2 text-sm">{item.timestamp}</span>
         <hr className="w-full bg-red-800" />
       </div>
-      {item?.chat_message?.map((msg: any, index: number) => (
+      {item?.chat_message?.map((msg: any) => (
         <div
-          key={index}
+          key={msg.id}
           className={`flex flex-wrap max-w-[80%] gap-1 ${
-            currentUserId === msg?.sender.id ? "self-end" : null
+            currentUserId === msg?.sender_user.id ? "self-end" : null
           }`}
         >
-          {currentUserId !== msg?.sender.id ? (
+          {currentUserId !== msg?.sender_user.id ? (
             <UserAvatar size="sm" isOnline={false} />
           ) : null}
           <div className="text-sm bg-blue-500 text-white p-2 rounded-sm break-words my-1">
-            {msg?.sender?.first_name} {item?.sender?.last_name}
+            {msg?.sender_user?.first_name} {item?.sender_user?.last_name}
             <div className="p-2">{msg?.content}</div>
           </div>
         </div>
