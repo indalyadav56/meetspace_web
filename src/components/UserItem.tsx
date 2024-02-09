@@ -14,7 +14,7 @@ export default function UserItem(props: any) {
   return (
     <Card
       ref={userRef}
-      className="h-16 w-full flex gap-2 items-center"
+      className="h-16 w-full flex gap-2 items-center rounded-none border-none drop-shadow-none shadow-none hover:bg-slate-300"
       onClick={onUserClick}
     >
       <UserAvatar isOnline={data.is_active} size="sm" />
@@ -27,7 +27,12 @@ export default function UserItem(props: any) {
             <h1>{data.email}</h1>
           )}
         </div>
-        <Button size="icon" variant="outline" onClick={() => alert("hello")}>
+        <Button
+          size="icon"
+          variant="outline"
+          className="rounded-full shadow-none drop-shadow-none border-none"
+          onClick={() => alert("hello")}
+        >
           <MoreHorizontal />
         </Button>
       </div>

@@ -1,34 +1,25 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Bell, MoreVertical } from "lucide-react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MoreVertical } from "lucide-react";
 
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
-
 import useUserStore from "@/store/userStore";
 import AddGroupForm from "../AddGroupForm";
 import ManageAccount from "../ManageAccount";
 import UploadProfile from "../UploadProfile";
+import { Button } from "../ui/button";
+import Menu from "../Menu";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
   const [accountDialog, setAccountDialog] = useState<boolean>(false);
   const [openGroupDialog, setOpenGroupDialog] = useState<boolean>(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const { currentUser, getUserProfile, success } = useUserStore();
-  const router = useRouter();
-
-  const userProfilePath =
-    process.env.NEXT_PUBLIC_API_BASE_URL +
-    "/uploads/" +
-    currentUser?.id +
-    "/profile/" +
-    currentUser?.profile_pic?.temp_name;
+  const { getUserProfile, success } = useUserStore();
 
   useEffect(() => {
     if (success) {
@@ -44,16 +35,17 @@ const NavBar = () => {
   return (
     <main className="w-full h-16">
       <ToastContainer />
-      <header className="flex justify-between">
+      <header className="flex justify-between p-1">
         <UserAvatar
           size="md"
           isOnline={true}
-          imgSrc={userProfilePath}
           onClick={() => setAccountDialog(true)}
         />
+        <Button variant="outline" size="icon" onClick={() => setOpen(true)}>
+          <MoreVertical />
+        </Button>
       </header>
       {/* menu */}
-      {/* <Menu /> */}
 
       {/* upload profile */}
       <UploadProfile />
