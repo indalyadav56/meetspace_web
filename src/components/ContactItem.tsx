@@ -20,12 +20,12 @@ const ChatContactCard: React.FC<any> = (props) => {
           <div className="flex items-center space-x-4">
             <UserAvatar isOnline={data.is_active} size="sm" />
             <div>
-              <p className="text-sm font-medium leading-none">
+              <p className="font-medium leading-none">
                 {data.is_group
                   ? data.room_name
                   : data.first_name + " " + data.last_name}
               </p>
-              <p className="text-sm text-muted-foreground dark:text-white">
+              <p className="text-sm mt-2 text-muted-foreground dark:text-white">
                 {data.last_message}
               </p>
             </div>

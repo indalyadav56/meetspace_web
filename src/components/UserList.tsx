@@ -44,7 +44,7 @@ export default function UserList({ data, setIsFocused }: UserListProps) {
   }, [chatRoomData]);
 
   return (
-    <div className="h-[calc(100%-48px)] overflow-y-auto">
+    <div className="h-[calc(100%-48px)] overflow-y-auto p-1">
       {data?.map((item: any) => (
         <UserItem
           key={item.id}

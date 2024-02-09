@@ -1,20 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Users } from "lucide-react";
 
-import { Button } from "../ui/button";
-import DrawerBox from "../DrawerBox";
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
 import useChatRoomStore from "@/store/chatRoomStore";
-import useChatGroupStore from "@/store/chatGroupStore";
-import UserList from "../UserList";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
   const { singleContactData } = useChatRoomStore();
-  const { getChatGroupMembers, chatGroupMembers } = useChatGroupStore();
 
   return (
     <main>
@@ -31,33 +25,31 @@ const ChatSectionHeader = () => {
         </div>
 
         <div className="flex gap-1">
-          {singleContactData?.is_group && (
-            <DrawerBox
-              triggerContent={
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => getChatGroupMembers(singleContactData.room_id)}
-                >
-                  <Users className="h-4 w-4" />
-                </Button>
+          {singleContactData?.is_group ? (
+            <DialogBox
+              title="Chat Group Details"
+              open={open}
+              handleClose={() => setOpen(false)}
+              mainContent={
+                <div>
+                  <h1>{singleContactData?.room_name}</h1>
+                </div>
               }
-              content={<UserList data={chatGroupMembers} />}
+            />
+          ) : (
+            <DialogBox
+              title="User Profile"
+              open={open}
+              handleClose={() => setOpen(false)}
+              mainContent={
+                <div>
+                  <h1>{singleContactData?.email}</h1>
+                </div>
+              }
             />
           )}
         </div>
       </div>
-
-      <DialogBox
-        title="User Profile"
-        open={open}
-        handleClose={() => setOpen(false)}
-        mainContent={
-          <div>
-            <h1>{singleContactData?.email}</h1>
-          </div>
-        }
-      />
     </main>
   );
 };
