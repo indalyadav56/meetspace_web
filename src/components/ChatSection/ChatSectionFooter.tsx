@@ -51,7 +51,12 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
           className="h-14 outline-none"
         />
       </div>
-      <Button size="icon" onClick={sendMessage} className="h-14 w-14">
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={sendMessage}
+        className="h-14 w-14"
+      >
         <Send />
       </Button>
     </div>

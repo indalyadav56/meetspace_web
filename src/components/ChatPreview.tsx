@@ -9,7 +9,7 @@ export default function ChatPreview() {
   };
 
   return (
-    <main className="w-full flex flex-col justify-center items-center">
+    <main className="flex-1 w-full flex flex-col justify-center items-center">
       <Lottie options={defaultOptions} height={400} width={400} />
       <h1 className="text-2xl">Start Chat</h1>
     </main>

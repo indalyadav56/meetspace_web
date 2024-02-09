@@ -48,19 +48,6 @@ export default function Home() {
       message.data.receiver_user.id === currentUserId
     ) {
       showNotification("New Message", message.data.content);
-      // dispatch(
-      //   updateChatRoomContactIndex({
-      //     user_id: message.data.sender_user.id,
-      //     first_name: message.data.sender_user.first_name,
-      //     last_name: message.data.sender_user.last_name,
-      //     is_active: message.data.sender_user.is_active,
-      //     is_group: message.data.is_group,
-      //     last_message: message.data.content,
-      //     message_unseen_count: 10,
-      //     room_id: message.data.room_id,
-      //     room_name: message.data.room_name,
-      //   })
-      // );
     }
   };
 
@@ -79,11 +66,9 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="w-screen h-screen flex flex-col overflow-hidden">
-      <div className="flex-1 h-[calc(100%-48px)] flex">
-        <SideBar />
-        {chatPreview ? <ChatSection /> : <ChatPreview />}
-      </div>
+    <main className="w-screen h-screen flex  overflow-hidden">
+      <SideBar />
+      {chatPreview ? <ChatSection /> : <ChatPreview />}
     </main>
   );
 }

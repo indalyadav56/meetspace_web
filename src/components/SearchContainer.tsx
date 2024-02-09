@@ -24,12 +24,12 @@ const SearchContainer: React.FC = () => {
   }, [ref]);
 
   return (
-    <div ref={ref} className="relative flex w-full my-8">
+    <div ref={ref} className="relative flex w-full my-4">
       <div className="w-full p-2">
         <Input onFocus={() => setIsFocused(true)} className="h-12" />
       </div>
       {isFocused && (
-        <div className="absolute w-full max-h-96 mt-16 bg-gray-400 rounded-sm z-50 overflow-y-auto overflow-x-hidden">
+        <div className="absolute w-full max-h-96 mt-16 rounded-sm z-50 overflow-y-auto overflow-x-hidden">
           <UserList data={users} setIsFocused={setIsFocused} />
         </div>
       )}
