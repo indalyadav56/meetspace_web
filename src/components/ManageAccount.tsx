@@ -1,23 +1,17 @@
 import React, { useState } from "react";
 
 import DialogBox from "./DialogBox";
-import { Label } from "@/components/ui/label";
 import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
+import UserAvatar from "./UserAvatar";
+import useUserStore from "@/store/userStore";
 
 export default function ManageAccount({
   open,
@@ -26,6 +20,12 @@ export default function ManageAccount({
   open: boolean;
   handleClose: any;
 }) {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
+    null
+  );
+
+  const { currentUser } = useUserStore();
   const { setTheme } = useTheme();
 
   const FormSchema = z.object({
@@ -55,6 +55,22 @@ export default function ManageAccount({
     setTheme(theme_value);
   }
 
+  const handleFileInputChange = (e: any) => {
+    const file = e.target.files[0];
+    console.log("file", file);
+    // Generate a preview for image files
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+    setSelectedFile(file);
+  };
+
   return (
     <div>
       <DialogBox
@@ -63,6 +79,20 @@ export default function ManageAccount({
         title="Manage Account"
         mainContent={
           <main>
+            <div className="flex items-center my-4">
+              <div className="flex-1 flex flex-col gap-4">
+                <input type="file" hidden accept=".jpg,.jpeg,.png" />
+                <Button variant="outline">Upload File</Button>
+                <Button variant="outline">Remove picture</Button>
+              </div>
+              <div className="flex-1 flex justify-center items-center">
+                {imagePreview ? (
+                  <UserAvatar imgSrc={"imagePreview"} size="xl" />
+                ) : (
+                  <UserAvatar imgSrc={"userProfilePath"} size="xl" />
+                )}
+              </div>
+            </div>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -87,7 +117,9 @@ export default function ManageAccount({
                     />
                   </div>
                 </div>
-                <Button type="submit">Submit</Button>
+                <Button className="w-full h-12" type="submit">
+                  Submit
+                </Button>
               </form>
             </Form>
           </main>

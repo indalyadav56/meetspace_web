@@ -3,9 +3,16 @@ import { create } from "zustand";
 import { getAllUsers, getUserProfileApi, updateUserApi } from "../api/userApi";
 import { AxiosError } from "axios";
 
+type CurrentUser = {
+  first_name: string;
+  last_name: string;
+  is_active: string;
+  theme: string;
+};
+
 type Store = {
   users: any;
-  currentUser: any;
+  currentUser: CurrentUser | null;
   success: boolean;
   loading: boolean;
   message: string | null;
@@ -18,7 +25,7 @@ type Store = {
 
 const useUserStore = create<Store>()((set) => ({
   users: [],
-  currentUser: {},
+  currentUser: null,
   success: false,
   loading: false,
   error: null,

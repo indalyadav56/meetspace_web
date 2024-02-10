@@ -20,18 +20,31 @@ const ChatMessageCard = ({ item }: any) => {
             currentUserId === msg?.sender_user.id ? "self-end" : null
           }`}
         >
-          <Card>
+          <div className="flex gap-2">
             {currentUserId !== msg?.sender_user.id ? (
               <UserAvatar size="sm" isOnline={msg?.sender_user?.is_active} />
             ) : null}
-            <div className="text-sm p-2 rounded-sm break-words my-1">
-              {msg?.sender_user?.first_name} {item?.sender_user?.last_name}
-              <div className="p-2">{msg?.content}</div>
+            <div className="">
+              <div className="flex gap-2 text-sm">
+                {currentUserId !== msg?.sender_user.id ? (
+                  <span>
+                    {msg?.sender_user?.first_name}{" "}
+                    {item?.sender_user?.last_name}
+                  </span>
+                ) : null}
+                {/* <p>10:00 AM</p> */}
+              </div>
+              <Card>
+                <div className="text-sm p-2 rounded-sm break-words my-1">
+                  <div className="p-2">{msg?.content}</div>
+                </div>
+              </Card>
+              {currentUserId === msg?.sender_user.id ? (
+                <div className="flex justify-end text-xs">
+                  <CheckCheck className="h-4 w-4" />
+                </div>
+              ) : null}
             </div>
-          </Card>
-          <div className="flex gap-2 mt-1 self-end text-xs">
-            <p>10:00</p>
-            <CheckCheck className="h-4 w-4" />
           </div>
         </main>
       ))}

@@ -6,7 +6,7 @@ import DialogBox from "./DialogBox";
 import useUserStore from "@/store/userStore";
 import { Button } from "./ui/button";
 
-const UploadProfile = () => {
+const UploadProfile = ({ open, handleClose }: { open: boolean }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
     null
@@ -50,12 +50,9 @@ const UploadProfile = () => {
   return (
     <div>
       <DialogBox
-        open={false}
+        open={open}
         title="Change your profile picture"
-        handleClose={() => {
-          //   setShowUserMenu(false);
-          // setOpen(false);
-        }}
+        handleClose={handleClose}
         mainContent={
           <div className="flex items-center">
             <div className="flex-1 flex flex-col gap-4">

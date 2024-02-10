@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Pencil } from "lucide-react";
 
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
@@ -31,6 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { Label } from "../ui/label";
 
 const NavBar = () => {
   const [accountDialog, setAccountDialog] = useState<boolean>(false);
@@ -60,16 +61,18 @@ const NavBar = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            onClick={() => setAccountDialog(true)}
             className="cursor-pointer w-56"
             align="end"
             forceMount
           >
-            <DropdownMenuLabel className="font-normal">
+            <DropdownMenuLabel
+              className="font-normal "
+              onClick={() => setAccountDialog(true)}
+            >
               <div className="flex gap-4 space-y-1">
                 <UserAvatar isOnline={currentUser?.is_active} size="sm" />
-                <div className="flex-1 flex flex-col">
-                  <div>
+                <Label className="cursor-pointer flex-1 flex flex-col h-5 w-5">
+                  <div className="flex flex-col gap-2">
                     <h1 className="font-bold eading-none">
                       {currentUser?.first_name + " " + currentUser?.last_name}
                     </h1>
@@ -77,7 +80,7 @@ const NavBar = () => {
                       {currentUser?.email}
                     </h1>
                   </div>
-                </div>
+                </Label>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -101,10 +104,9 @@ const NavBar = () => {
       <AlertDialog open={logoutDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              are you sure you want to logout.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -117,9 +119,6 @@ const NavBar = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* upload profile */}
-      <UploadProfile />
 
       {/* add group */}
       <DialogBox

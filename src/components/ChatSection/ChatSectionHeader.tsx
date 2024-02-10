@@ -38,7 +38,7 @@ const ChatSectionHeader = () => {
             />
           ) : (
             <DialogBox
-              title="User Profile"
+              title="User"
               open={open}
               handleClose={() => setOpen(false)}
               mainContent={
