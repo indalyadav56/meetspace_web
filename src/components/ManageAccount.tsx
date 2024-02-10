@@ -7,11 +7,18 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
 import UserAvatar from "./UserAvatar";
 import useUserStore from "@/store/userStore";
+import { Input } from "./ui/input";
 
 export default function ManageAccount({
   open,
@@ -30,12 +37,14 @@ export default function ManageAccount({
 
   const FormSchema = z.object({
     dark_theme: z.boolean(),
+    email: z.string(),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       dark_theme: false,
+      email: "indal@gmail.com",
     },
   });
 
@@ -111,6 +120,18 @@ export default function ManageAccount({
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
                           </FormControl>
                         </FormItem>
                       )}

@@ -4,6 +4,7 @@ import useChatMessageStore from "@/store/chatMessageStore";
 import ChatContactItem from "./ContactItem";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { ChatContact } from "@/types/chat_room";
+import { useEffect } from "react";
 
 interface ChatContactListProps {
   data: ChatContact[];

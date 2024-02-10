@@ -4,6 +4,7 @@ import { getAllUsers, getUserProfileApi, updateUserApi } from "../api/userApi";
 import { AxiosError } from "axios";
 
 type CurrentUser = {
+  email: string;
   first_name: string;
   last_name: string;
   is_active: string;

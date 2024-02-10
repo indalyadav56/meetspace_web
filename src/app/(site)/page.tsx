@@ -65,10 +65,12 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log("preview", chatPreview);
+
   return (
     <main className="w-screen h-screen flex  overflow-hidden">
       <SideBar />
-      {chatPreview ? <ChatSection /> : <ChatPreview />}
+      {chatPreview ? <ChatPreview /> : <ChatSection />}
     </main>
   );
 }

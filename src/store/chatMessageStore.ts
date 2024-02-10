@@ -5,6 +5,7 @@ import { getChatMessageByRoomIdApi } from "@/api/chatMessageApi";
 
 type Store = {
   chatMessageData: any;
+  success: boolean;
 
   getChatMessageByRoomId: (roomId: string) => Promise<any>;
   addChatMessage: (data: any) => Promise<any>;
@@ -13,6 +14,7 @@ type Store = {
 
 const useChatMessageStore = create<Store>()((set) => ({
   chatMessageData: [],
+  success: false,
 
   addChatMessage: async (data: any) => {
     set((state) => {
@@ -47,8 +49,13 @@ const useChatMessageStore = create<Store>()((set) => ({
   },
 
   getChatMessageByRoomId: async (roomId: string) => {
-    const res: any = await getChatMessageByRoomIdApi(roomId);
-    set({ chatMessageData: res.data.data });
+    getChatMessageByRoomIdApi(roomId)
+      .then((resp: any) => {
+        set({ chatMessageData: resp.data?.data, success: true });
+      })
+      .catch((err) => {
+        set({ success: false });
+      });
   },
   removeCurrentMsgDataState: async () => {
     set({ chatMessageData: [] });

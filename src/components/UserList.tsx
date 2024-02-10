@@ -14,13 +14,19 @@ interface UserListProps {
 
 export default function UserList({ data, setIsFocused }: UserListProps) {
   const [userItem, setUserItem] = useState<any>();
-  const { updateChatRoomContact, getChatRoomByUserId, chatRoomData } =
-    useChatRoomStore();
+  const {
+    updateChatRoomContact,
+    getChatRoomByUserId,
+    chatRoomData,
+    setChatPreview,
+    chatPreview,
+  } = useChatRoomStore();
   const { removeCurrentMsgDataState, getChatMessageByRoomId } =
     useChatMessageStore();
 
-  const onUserClick = async (userItem: any) => {
-    console.log("userItem", userItem);
+  const onUserClick = (userItem: any) => {
+    setChatPreview(false);
+    console.log("chatPreview", chatPreview);
     removeCurrentMsgDataState();
     getChatRoomByUserId(userItem.id);
     setUserItem(userItem);

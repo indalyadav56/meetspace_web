@@ -13,6 +13,7 @@ type Store = {
   updateChatRoomContact: (item: any) => Promise<any>;
   getSingleContactData: (item: any) => Promise<any>;
   getChatRoomByUserId: (user_id: string) => Promise<any>;
+  setChatPreview: (flag: boolean) => void;
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
@@ -23,7 +24,7 @@ const useChatRoomStore = create<Store>()((set) => ({
     email: "",
   },
   chatRoomData: [],
-  chatPreview: false,
+  chatPreview: true,
 
   getChatRoomContactData: async () => {
     const responseData = await getChatRoomContact();
@@ -33,7 +34,7 @@ const useChatRoomStore = create<Store>()((set) => ({
   },
 
   getSingleContactData: async (item: ChatContact) => {
-    set((state) => ({ singleContactData: item, chatPreview: true }));
+    set((state) => ({ singleContactData: item, chatPreview: false }));
   },
 
   updateChatRoomContact: async (item: ChatContact) => {
@@ -65,6 +66,10 @@ const useChatRoomStore = create<Store>()((set) => ({
       .catch((err) => {
         return err;
       });
+  },
+
+  setChatPreview: (flag) => {
+    set({ chatPreview: flag });
   },
 }));
 

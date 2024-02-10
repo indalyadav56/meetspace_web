@@ -20,14 +20,20 @@ const ChatContactCard: React.FC<any> = (props) => {
           <div className="flex items-center space-x-4">
             <UserAvatar isOnline={data.is_active} size="sm" />
             <div>
-              <p className="font-medium leading-none">
+              <p className="font-normal leading-none">
                 {data.is_group
                   ? data.room_name
                   : data.first_name + " " + data.last_name}
               </p>
-              <p className="text-sm mt-2 text-muted-foreground dark:text-white">
-                {data.last_message}
-              </p>
+              {data.last_message ? (
+                <p className="text-sm mt-2 text-muted-foreground dark:text-white">
+                  {data.last_message}
+                </p>
+              ) : (
+                <p className="text-sm mt-2 text-muted-foreground dark:text-white">
+                  {data.email}
+                </p>
+              )}
             </div>
           </div>
           <div className="visible group-hover:invisible flex flex-col items-center justify-between gap-1 p-1 text-xs">
