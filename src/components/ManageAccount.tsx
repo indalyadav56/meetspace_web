@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import DialogBox from "./DialogBox";
 import { useTheme } from "next-themes";
@@ -37,14 +37,14 @@ export default function ManageAccount({
 
   const FormSchema = z.object({
     dark_theme: z.boolean(),
-    email: z.string(),
+    email: z.string().nullish(),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       dark_theme: false,
-      email: "indal@gmail.com",
+      email: "",
     },
   });
 
@@ -79,6 +79,18 @@ export default function ManageAccount({
     }
     setSelectedFile(file);
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      form.setValue("email", currentUser.email);
+      if (currentUser.theme == "light") {
+        form.setValue("dark_theme", false);
+      } else {
+        form.setValue("dark_theme", true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
 
   return (
     <div>
@@ -127,9 +139,10 @@ export default function ManageAccount({
                     <FormField
                       control={form.control}
                       name="email"
+                      disabled
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>Email</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>

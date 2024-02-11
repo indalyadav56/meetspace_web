@@ -13,7 +13,7 @@ type CurrentUser = {
 
 type Store = {
   users: any;
-  currentUser: CurrentUser | null;
+  currentUser: CurrentUser;
   success: boolean;
   loading: boolean;
   message: string | null;
@@ -26,7 +26,7 @@ type Store = {
 
 const useUserStore = create<Store>()((set) => ({
   users: [],
-  currentUser: null,
+  currentUser: {} as CurrentUser,
   success: false,
   loading: false,
   error: null,

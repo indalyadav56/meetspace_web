@@ -20,7 +20,7 @@ const ChatContactList: React.FC<ChatContactListProps> = (props) => {
   const { getSingleContactData } = useChatRoomStore();
 
   const onItemClick = (contact: ChatContact) => {
-    // router.push(`/chat/${contact.room_id}`);
+    router.push(`/chat/${contact.room_id}`);
     getSingleContactData(contact);
     useChatMessageStore.setState({ chatMessageData: [] });
     if (contact.room_id) {

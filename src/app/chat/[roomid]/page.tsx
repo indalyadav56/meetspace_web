@@ -76,5 +76,5 @@ export default function ChatArea() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <main>{chatPreview ? <ChatPreview /> : <ChatSection />}</main>;
+  return <>{chatPreview ? <ChatPreview /> : <ChatSection />}</>;
 }
