@@ -3,16 +3,15 @@
 import { useEffect } from "react";
 
 import ChatSection from "@/components/ChatSection";
-import SideBar from "@/components/SideBar";
 import { useSocket } from "@/context/Socket";
-import constants from "../../constants";
-import { getUserIdFromToken } from "../../lib/jwt";
 import useUserStore from "@/store/userStore";
 import ChatPreview from "@/components/ChatPreview";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { ChatContact } from "@/types/chat_room";
+import { getUserIdFromToken } from "@/lib/jwt";
+import constants from "@/constants";
 
-export default function Home() {
+export default function ChatArea() {
   const socket = useSocket();
 
   const currentUserId = getUserIdFromToken();
@@ -77,10 +76,5 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <main className="w-screen h-screen flex  overflow-hidden">
-      <SideBar />
-      {chatPreview ? <ChatPreview /> : <ChatSection />}
-    </main>
-  );
+  return <main>{chatPreview ? <ChatPreview /> : <ChatSection />}</main>;
 }

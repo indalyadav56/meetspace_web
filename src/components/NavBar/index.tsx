@@ -3,14 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MoreVertical, Pencil } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
 import useUserStore from "@/store/userStore";
 import AddGroupForm from "../AddGroupForm";
 import ManageAccount from "../ManageAccount";
-import UploadProfile from "../UploadProfile";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -56,7 +55,7 @@ const NavBar = () => {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="ghost" size="icon">
               <MoreVertical />
             </Button>
           </DropdownMenuTrigger>

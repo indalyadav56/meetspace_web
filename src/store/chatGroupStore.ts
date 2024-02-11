@@ -13,7 +13,7 @@ type Store = {
   chatGroupMembers: any;
 
   createChatGroup: (data: any) => Promise<any>;
-  getChatGroupMembers: (data: any) => Promise<any>;
+  getChatGroupMembers: (room_id: string) => Promise<any>;
 };
 
 const useChatGroupStore = create<Store>()((set) => ({
@@ -43,6 +43,7 @@ const useChatGroupStore = create<Store>()((set) => ({
         chatGroupMembers: resp.data.data,
       }));
     });
+    set({ loading: false });
   },
 }));
 

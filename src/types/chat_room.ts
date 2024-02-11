@@ -15,4 +15,5 @@ export type ChatContact = {
   is_group?: boolean;
   last_message?: string;
   message_unseen_count?: number;
+  updated_at?: string;
 };

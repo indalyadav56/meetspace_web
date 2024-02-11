@@ -40,7 +40,7 @@ const SearchContainer: React.FC = () => {
       </div>
 
       {isFocused && (
-        <div className="absolute w-full max-h-96 mt-16 rounded-sm z-50 overflow-y-auto overflow-x-hidden">
+        <div className="absolute w-full max-h-96 bg-gray-200 dark:bg-slate-900 mt-16 rounded-sm z-50 overflow-y-auto overflow-x-hidden">
           <UserList data={users} setIsFocused={setIsFocused} />
         </div>
       )}

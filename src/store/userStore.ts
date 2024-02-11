@@ -7,7 +7,7 @@ type CurrentUser = {
   email: string;
   first_name: string;
   last_name: string;
-  is_active: string;
+  is_active: boolean;
   theme: string;
 };
 
