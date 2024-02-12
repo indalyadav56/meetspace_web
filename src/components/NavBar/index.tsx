@@ -41,7 +41,7 @@ const NavBar = () => {
 
   const router = useRouter();
   const { getUserProfile, currentUser } = useUserStore();
-  const { logoutUser } = useAuthStore();
+  const { logoutUser, loading, success, actionType } = useAuthStore();
 
   useEffect(() => {
     getUserProfile();
@@ -49,9 +49,15 @@ const NavBar = () => {
   }, []);
 
   const handleLogout = () => {
-    router.push("/login");
     logoutUser();
   };
+
+  useEffect(() => {
+    if (success && actionType === "logout") {
+      router.push("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [success]);
 
   return (
     <main className="w-full h-16">
@@ -121,7 +127,9 @@ const NavBar = () => {
             <AlertDialogCancel onClick={() => setLogoutDialog(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleLogout}>Logout</AlertDialogAction>
+            <AlertDialogAction onClick={handleLogout}>
+              {loading ? "wait..." : "Logout"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

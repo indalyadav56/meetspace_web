@@ -6,6 +6,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -19,11 +20,9 @@ import {
 } from "@/components/ui/form";
 import useAuthStore from "@/store/authStore";
 import { useEffect } from "react";
-import CookieService from "@/lib/cookies";
-import constants from "@/constants";
 
 const LoginForm = () => {
-  const { loginUser, loading, error, message, success, authData, actionType } =
+  const { loginUser, loading, error, message, success, actionType } =
     useAuthStore();
 
   const router = useRouter();
@@ -66,14 +65,6 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (success && actionType == "login") {
-      CookieService.setCookie(
-        constants.token.ACCESS_TOKEN,
-        authData?.data?.token?.access
-      );
-      CookieService.setCookie(
-        constants.token.REFRESH_TOKEN,
-        authData?.data?.token?.refresh
-      );
       router.push("/chat");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,10 +105,15 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
-
-          <Button className="w-full h-14" type="submit">
-            Submit
-          </Button>
+          {loading ? (
+            <div className="w-full flex justify-center">
+              <ClipLoader size={60} loading={loading} />
+            </div>
+          ) : (
+            <Button className="w-full h-14" type="submit">
+              Submit
+            </Button>
+          )}
         </form>
       </Form>
     </main>

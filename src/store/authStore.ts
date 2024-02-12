@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { AxiosError } from "axios";
 
 import { register, login, logout } from "../api/authApi";
 import CookieService from "@/lib/cookies";
@@ -53,6 +52,14 @@ const useAuthStore = create<Store>()((set) => ({
     set({ loading: true, success: false });
     login(reqData)
       .then((response) => {
+        CookieService.setCookie(
+          constants.token.ACCESS_TOKEN,
+          response.data?.data?.token?.access
+        );
+        CookieService.setCookie(
+          constants.token.REFRESH_TOKEN,
+          response.data?.data?.token?.refresh
+        );
         set({
           authData: response.data,
           loading: false,
@@ -72,12 +79,13 @@ const useAuthStore = create<Store>()((set) => ({
   },
 
   logoutUser: async () => {
-    set({ loading: true });
+    set({ loading: true, success: false });
     logout({
       refresh_token: CookieService.getCookie(constants.token.REFRESH_TOKEN),
     })
       .then((response) => {
         CookieService.removeCookie(constants.token.ACCESS_TOKEN);
+        CookieService.removeCookie(constants.token.REFRESH_TOKEN);
         set({
           authData: response.data,
           loading: false,
@@ -87,7 +95,12 @@ const useAuthStore = create<Store>()((set) => ({
       })
       .catch((err: any) => {
         const resp = err.response?.data;
-        set({ error: resp?.error, message: resp?.message, loading: false });
+        set({
+          error: resp?.error,
+          message: resp?.message,
+          loading: false,
+          success: false,
+        });
       });
   },
 
