@@ -1,9 +1,17 @@
 import { create } from "zustand";
 
-import { getChatRoomContact, getChatRoomByUserIdApi } from "../api/chatRoomApi";
+import {
+  getChatRoomContact,
+  getChatRoomByUserIdApi,
+  getSingleChatRoomApi,
+} from "../api/chatRoomApi";
 import { ChatContact } from "@/types/chat_room";
 
 type Store = {
+  loading: boolean;
+  success: boolean;
+  error: [] | null;
+
   chatRoomContact: ChatContact[];
   singleContactData: ChatContact;
   chatRoomData: any;
@@ -17,27 +25,45 @@ type Store = {
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
+  loading: false,
+  success: false,
+  error: null,
   chatRoomContact: [],
-  singleContactData: {
-    room_id: "",
-    user_id: "",
-    email: "",
-  },
+  singleContactData: {} as ChatContact,
   chatRoomData: [],
   chatPreview: true,
 
   getChatRoomContactData: async () => {
+    set({ success: false, loading: true });
     const responseData = await getChatRoomContact();
     set((state: any) => ({
       chatRoomContact: responseData.data,
     }));
   },
 
-  getSingleContactData: async (item: ChatContact) => {
-    set((state) => ({ singleContactData: item, chatPreview: false }));
+  getSingleContactData: async (room_id: string) => {
+    set({ success: false, loading: true });
+    getSingleChatRoomApi(room_id)
+      .then((res) => {
+        console.log("getSingleContactData", res.data.data);
+        set({
+          singleContactData: {
+            room_id: res.data.data.id,
+            room_name: res.data.data.room_name,
+            first_name: res.data.data.room_users[0].first_name,
+            last_name: res.data.data.room_users[0].last_name,
+            is_group: res.data.data.is_group,
+          },
+          chatPreview: false,
+        });
+      })
+      .catch((err) => {
+        set({ loading: false, chatPreview: false });
+      });
   },
 
   updateChatRoomContact: async (item: ChatContact) => {
+    set({ success: false, loading: true });
     set((state) => {
       if (state.chatRoomContact) {
         return {
@@ -58,6 +84,7 @@ const useChatRoomStore = create<Store>()((set) => ({
   },
 
   getChatRoomByUserId: async (user_id: string) => {
+    set({ success: false, loading: true });
     getChatRoomByUserIdApi(user_id)
       .then((resp) => {
         set((state) => ({ chatRoomData: resp.data.data }));

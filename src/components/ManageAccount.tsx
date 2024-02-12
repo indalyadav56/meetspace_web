@@ -136,10 +136,9 @@ export default function ManageAccount({
                         </FormItem>
                       )}
                     />
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name="email"
-                      disabled
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Email</FormLabel>
@@ -148,7 +147,7 @@ export default function ManageAccount({
                           </FormControl>
                         </FormItem>
                       )}
-                    />
+                    /> */}
                   </div>
                 </div>
                 <Button className="w-full h-12" type="submit">

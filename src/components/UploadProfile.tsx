@@ -6,7 +6,13 @@ import DialogBox from "./DialogBox";
 import useUserStore from "@/store/userStore";
 import { Button } from "./ui/button";
 
-const UploadProfile = ({ open, handleClose }: { open: boolean }) => {
+const UploadProfile = ({
+  open,
+  handleClose,
+}: {
+  open: boolean;
+  handleClose: any;
+}) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
     null

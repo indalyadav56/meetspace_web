@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MoreVertical, Phone, UserPlus, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,11 +34,6 @@ const ChatSectionHeader = () => {
   const { singleContactData } = useChatRoomStore();
   const { getChatGroupMembers, chatGroupMembers } = useChatGroupStore();
 
-  useEffect(() => {
-    getChatGroupMembers(singleContactData.room_id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleContactData]);
-
   const options = [
     {
       label: "test",
@@ -55,11 +50,22 @@ const ChatSectionHeader = () => {
   ];
   const selectedValues = new Set();
 
+  useEffect(() => {
+    console.log("singleContactData", singleContactData);
+  }, [singleContactData]);
+
   return (
     <main>
       <div className="w-full flex h-16 justify-between p-4 border-b-2 items-center">
         <div className="flex items-center">
-          <UserAvatar isOnline={true} onClick={() => setOpen(true)} size="sm" />
+          <UserAvatar
+            isOnline={true}
+            onClick={() => {
+              setOpen(true);
+              getChatGroupMembers(singleContactData.room_id);
+            }}
+            size="sm"
+          />
           <h1 className="ml-2 text-lg">
             {singleContactData?.is_group
               ? singleContactData?.room_name

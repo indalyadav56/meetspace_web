@@ -10,11 +10,15 @@ import useChatRoomStore from "@/store/chatRoomStore";
 import { ChatContact } from "@/types/chat_room";
 import { getUserIdFromToken } from "@/lib/jwt";
 import constants from "@/constants";
+import { useParams } from "next/navigation";
 
 export default function ChatArea() {
+  const params = useParams();
   const socket = useSocket();
 
   const currentUserId = getUserIdFromToken();
+
+  const currentRoomId = params.roomid as string;
   const receiverUser = null;
 
   const { getAllUsers } = useUserStore();
@@ -76,5 +80,13 @@ export default function ChatArea() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <>{chatPreview ? <ChatPreview /> : <ChatSection />}</>;
+  return (
+    <>
+      {!currentRoomId ? (
+        <ChatPreview />
+      ) : (
+        <ChatSection room_id={currentRoomId} />
+      )}
+    </>
+  );
 }

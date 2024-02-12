@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MoreVertical } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
@@ -31,18 +32,26 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { Label } from "../ui/label";
+import useAuthStore from "@/store/authStore";
 
 const NavBar = () => {
   const [accountDialog, setAccountDialog] = useState<boolean>(false);
   const [groupDialog, setGroupDialog] = useState<boolean>(false);
   const [logoutDialog, setLogoutDialog] = useState<boolean>(false);
 
+  const router = useRouter();
   const { getUserProfile, currentUser } = useUserStore();
+  const { logoutUser } = useAuthStore();
 
   useEffect(() => {
     getUserProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleLogout = () => {
+    router.push("/login");
+    logoutUser();
+  };
 
   return (
     <main className="w-full h-16">
@@ -112,9 +121,7 @@ const NavBar = () => {
             <AlertDialogCancel onClick={() => setLogoutDialog(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => setLogoutDialog(false)}>
-              Continue
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleLogout}>Logout</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

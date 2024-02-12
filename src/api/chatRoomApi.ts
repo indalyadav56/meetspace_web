@@ -25,6 +25,10 @@ export const getChatRoomByUserIdApi = async (user_id: string) => {
   return api.get(`/v1/chat/rooms?user_id=${user_id}`);
 };
 
+export const getSingleChatRoomApi = async (room_id: string) => {
+  return api.get(`/v1/chat/rooms?room_id=${room_id}`);
+};
+
 export const getSingleChatRoom = async (
   roomId: string
 ): Promise<AxiosResponse<ChatRoom>> => {

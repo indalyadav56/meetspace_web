@@ -19,14 +19,12 @@ export default function UserList({ data, setIsFocused }: UserListProps) {
     getChatRoomByUserId,
     chatRoomData,
     setChatPreview,
-    chatPreview,
   } = useChatRoomStore();
   const { removeCurrentMsgDataState, getChatMessageByRoomId } =
     useChatMessageStore();
 
   const onUserClick = (userItem: any) => {
     setChatPreview(false);
-    console.log("chatPreview", chatPreview);
     removeCurrentMsgDataState();
     getChatRoomByUserId(userItem.id);
     setUserItem(userItem);

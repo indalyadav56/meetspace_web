@@ -1,9 +1,13 @@
 import { create } from "zustand";
 
-import { getAllUsers, getUserProfileApi, updateUserApi } from "../api/userApi";
-import { AxiosError } from "axios";
+import {
+  getAllUsers,
+  getSingleUserApi,
+  getUserProfileApi,
+  updateUserApi,
+} from "../api/userApi";
 
-type CurrentUser = {
+type User = {
   email: string;
   first_name: string;
   last_name: string;
@@ -13,7 +17,8 @@ type CurrentUser = {
 
 type Store = {
   users: any;
-  currentUser: CurrentUser;
+  currentUser: User;
+  singleUser: User;
   success: boolean;
   loading: boolean;
   message: string | null;
@@ -22,34 +27,49 @@ type Store = {
   getAllUsers: () => Promise<any>;
   getUserProfile: () => Promise<any>;
   updateUser: (updateData: any) => Promise<any>;
+  getSingleUser: (user_id: string) => Promise<any>;
 };
 
 const useUserStore = create<Store>()((set) => ({
   users: [],
-  currentUser: {} as CurrentUser,
+  currentUser: {} as User,
+  singleUser: {} as User,
   success: false,
   loading: false,
   error: null,
   message: null,
 
   getAllUsers: async () => {
+    set({ loading: true, success: false });
     const users = await getAllUsers();
-    set({ users: users.data });
+    set({ users: users.data, loading: false, success: false });
   },
 
-  getSingleUser: async () => {
-    const users = await getAllUsers();
-    set({ users: users.data });
+  getSingleUser: async (userId: string) => {
+    set({ loading: true, success: false });
+    getSingleUserApi(userId)
+      .then((resp) => {
+        set({ singleUser: resp.data.data, loading: false, success: false });
+      })
+      .catch((err) => {
+        set({ loading: false, success: false });
+      });
   },
 
   getUserProfile: async () => {
+    set({ loading: true, success: false });
     getUserProfileApi()
       .then((response) => {
         set({ currentUser: response.data, loading: false, success: true });
       })
       .catch((err: any) => {
         const resp: any = err.response?.data;
-        set({ error: resp?.error, message: resp?.message, loading: false });
+        set({
+          error: resp?.error,
+          message: resp?.message,
+          success: false,
+          loading: false,
+        });
       });
   },
 
@@ -61,7 +81,12 @@ const useUserStore = create<Store>()((set) => ({
       })
       .catch((err: any) => {
         const resp: any = err.response?.data;
-        set({ error: resp?.error, message: resp?.message, loading: false });
+        set({
+          error: resp?.error,
+          message: resp?.message,
+          success: false,
+          loading: false,
+        });
       });
   },
 }));

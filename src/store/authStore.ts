@@ -15,7 +15,7 @@ type Store = {
 
   registerUser: (reqData: any) => Promise<any>;
   loginUser: (reqData: any) => Promise<any>;
-  logoutUser: (data: any) => Promise<any>;
+  logoutUser: () => Promise<any>;
   resetForm: () => void;
 };
 
@@ -28,7 +28,7 @@ const useAuthStore = create<Store>()((set) => ({
   actionType: null,
 
   registerUser: async (reqData: any) => {
-    set({ loading: true });
+    set({ loading: true, success: false });
     register(reqData)
       .then((response) => {
         set({
@@ -40,12 +40,17 @@ const useAuthStore = create<Store>()((set) => ({
       })
       .catch((err: any) => {
         const resp = err.response?.data;
-        set({ error: resp?.error, message: resp?.message, loading: false });
+        set({
+          error: resp?.error,
+          message: resp?.message,
+          loading: false,
+          success: false,
+        });
       });
   },
 
   loginUser: async (reqData: any) => {
-    set({ loading: true });
+    set({ loading: true, success: false });
     login(reqData)
       .then((response) => {
         set({
@@ -57,13 +62,20 @@ const useAuthStore = create<Store>()((set) => ({
       })
       .catch((err: any) => {
         const resp = err.response?.data;
-        set({ error: resp?.error, message: resp?.message, loading: false });
+        set({
+          error: resp?.error,
+          message: resp?.message,
+          loading: false,
+          success: false,
+        });
       });
   },
 
-  logoutUser: async (reqData: any) => {
+  logoutUser: async () => {
     set({ loading: true });
-    logout(reqData)
+    logout({
+      refresh_token: CookieService.getCookie(constants.token.REFRESH_TOKEN),
+    })
       .then((response) => {
         CookieService.removeCookie(constants.token.ACCESS_TOKEN);
         set({
