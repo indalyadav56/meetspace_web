@@ -13,9 +13,10 @@ type Store = {
   error: [] | null;
 
   chatRoomContact: ChatContact[];
-  singleContactData: ChatContact;
   chatRoomData: any;
   chatPreview: boolean;
+
+  singleRoomData: any;
 
   getChatRoomContactData: () => Promise<void>;
   updateChatRoomContact: (item: any) => Promise<any>;
@@ -29,9 +30,9 @@ const useChatRoomStore = create<Store>()((set) => ({
   success: false,
   error: null,
   chatRoomContact: [],
-  singleContactData: {} as ChatContact,
   chatRoomData: [],
   chatPreview: true,
+  singleRoomData: {},
 
   getChatRoomContactData: async () => {
     set({ success: false, loading: true });
@@ -45,15 +46,8 @@ const useChatRoomStore = create<Store>()((set) => ({
     set({ success: false, loading: true });
     getSingleChatRoomApi(room_id)
       .then((res) => {
-        console.log("getSingleContactData", res.data.data);
         set({
-          singleContactData: {
-            room_id: res.data.data.id,
-            room_name: res.data.data.room_name,
-            first_name: res.data.data.room_users[0].first_name,
-            last_name: res.data.data.room_users[0].last_name,
-            is_group: res.data.data.is_group,
-          },
+          singleRoomData: res.data.data,
           chatPreview: false,
         });
       })
@@ -72,13 +66,11 @@ const useChatRoomStore = create<Store>()((set) => ({
             ...state.chatRoomContact.filter((i) => i.user_id !== item.user_id),
           ],
           chatRoomData: [],
-          singleContactData: item,
         };
       }
       return {
         chatRoomContact: [item],
         chatRoomData: [],
-        singleContactData: item,
       };
     });
   },

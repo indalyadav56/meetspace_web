@@ -16,14 +16,10 @@ const ChatContactList: React.FC<ChatContactListProps> = (props) => {
   const { data, setIsFocused } = props;
 
   const router = useRouter();
-  const { getChatMessageByRoomId } = useChatMessageStore();
 
   const onItemClick = (contact: ChatContact) => {
     router.push(`/chat/${contact.room_id}`);
     useChatMessageStore.setState({ chatMessageData: [] });
-    if (contact.room_id) {
-      getChatMessageByRoomId(contact?.room_id);
-    }
     if (setIsFocused) setIsFocused(false);
   };
 

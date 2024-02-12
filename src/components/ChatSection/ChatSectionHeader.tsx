@@ -27,12 +27,13 @@ import {
 } from "../ui/command";
 import { CheckIcon } from "@radix-ui/react-icons";
 
-const ChatSectionHeader = () => {
+const ChatSectionHeader = ({ roomId }: { roomId: string }) => {
   const [open, setOpen] = useState(false);
   const [addGroupUser, setAddGroupUser] = useState(false);
 
-  const { singleContactData } = useChatRoomStore();
+  const { singleRoomData } = useChatRoomStore();
   const { getChatGroupMembers, chatGroupMembers } = useChatGroupStore();
+  const { getSingleContactData } = useChatRoomStore();
 
   const options = [
     {
@@ -51,8 +52,9 @@ const ChatSectionHeader = () => {
   const selectedValues = new Set();
 
   useEffect(() => {
-    console.log("singleContactData", singleContactData);
-  }, [singleContactData]);
+    getSingleContactData(roomId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId]);
 
   return (
     <main>
@@ -62,17 +64,22 @@ const ChatSectionHeader = () => {
             isOnline={true}
             onClick={() => {
               setOpen(true);
-              getChatGroupMembers(singleContactData.room_id);
+              getChatGroupMembers(singleRoomData.id);
             }}
             size="sm"
           />
-          <h1 className="ml-2 text-lg">
-            {singleContactData?.is_group
-              ? singleContactData?.room_name
-              : singleContactData?.first_name +
-                " " +
-                singleContactData?.last_name}
-          </h1>
+          {singleRoomData && ( // Check if singleRoomData exists
+            <h1 className="ml-2 text-lg">
+              {singleRoomData.is_group
+                ? singleRoomData.room_name
+                : singleRoomData.room_users &&
+                  singleRoomData.room_users.length > 0
+                ? singleRoomData.room_users[0].first_name +
+                  " " +
+                  singleRoomData.room_users[0].last_name
+                : null}
+            </h1>
+          )}
         </div>
         <div className="flex items-center gap-2 text-sm">
           <Button variant="ghost" size="icon">
@@ -81,7 +88,7 @@ const ChatSectionHeader = () => {
           <Button variant="ghost" size="icon">
             <Phone />
           </Button>
-          {singleContactData.is_group ? (
+          {singleRoomData?.is_group ? (
             <Button
               variant="ghost"
               size="icon"
@@ -110,11 +117,11 @@ const ChatSectionHeader = () => {
         </div>
 
         {/* dialog*/}
-        {singleContactData?.is_group ? (
+        {singleRoomData?.is_group ? (
           <DialogBox
             title={
-              singleContactData?.room_name
-                ? singleContactData?.room_name
+              singleRoomData?.room_name
+                ? singleRoomData?.room_name
                 : "Chat Group Details"
             }
             open={open}
@@ -132,7 +139,7 @@ const ChatSectionHeader = () => {
             handleClose={() => setOpen(false)}
             mainContent={
               <div>
-                <h1>{singleContactData?.email}</h1>
+                <h1>{singleRoomData?.room_users?.[0].email}</h1>
               </div>
             }
           />

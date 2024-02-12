@@ -26,7 +26,7 @@ const formSchema = z.object({
 
 const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
   const { currentUser } = useUserStore();
-  const { singleContactData } = useChatRoomStore();
+  const { singleRoomData } = useChatRoomStore();
 
   function getCurrentUtcTime() {
     const now = new Date();
@@ -42,13 +42,13 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
           event: constants.event.CHAT_MESSAGE_SENT,
           data: {
             content: content,
-            room_id: singleContactData.room_id,
+            room_id: singleRoomData.id,
             updated_at: getCurrentUtcTime(),
             receiver_user: {
-              id: singleContactData.user_id,
-              first_name: singleContactData.first_name,
-              last_name: singleContactData.last_name,
-              email: singleContactData.email,
+              id: singleRoomData.user_id,
+              first_name: singleRoomData.first_name,
+              last_name: singleRoomData.last_name,
+              email: singleRoomData.email,
             },
             sender_user: {
               ...currentUser,

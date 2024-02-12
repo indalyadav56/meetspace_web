@@ -8,13 +8,12 @@ import ChatSectionHeader from "./ChatSectionHeader";
 import constants from "@/constants";
 import useChatMessageStore from "@/store/chatMessageStore";
 import CookieService from "@/lib/cookies";
-import useChatRoomStore from "@/store/chatRoomStore";
 
 const ChatSection = ({ room_id }: { room_id: string }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
+  const { getChatMessageByRoomId } = useChatMessageStore();
   const { addChatMessage } = useChatMessageStore();
-  const { getSingleContactData } = useChatRoomStore();
 
   const token = CookieService.getCookie(constants.token.ACCESS_TOKEN);
 
@@ -35,13 +34,13 @@ const ChatSection = ({ room_id }: { room_id: string }) => {
     const newSocket = new WebSocket(url);
     setSocket(newSocket);
 
-    newSocket.onopen = (event) => {
-      console.log("connection open", event);
-    };
+    // newSocket.onopen = (event) => {
+    // console.log("connection open", event);
+    // };
 
-    newSocket.onerror = (event) => {
-      console.log("connection err:=>", event);
-    };
+    // newSocket.onerror = (event) => {
+    // console.log("connection err:=>", event);
+    // };
 
     newSocket.onmessage = (event) => {
       console.log("on chat-messagge=>", event.data);
@@ -53,13 +52,13 @@ const ChatSection = ({ room_id }: { room_id: string }) => {
   }, [setSocket, url]);
 
   useEffect(() => {
-    getSingleContactData(room_id);
+    getChatMessageByRoomId(room_id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room_id]);
 
   return (
     <div className="flex-1 flex flex-col">
-      <ChatSectionHeader />
+      <ChatSectionHeader roomId={room_id} />
       <ChatSectionContent />
       <ChatSectionFooter socket={socket} />
     </div>
