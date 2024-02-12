@@ -6,27 +6,26 @@ import useChatGroupStore from "@/store/chatGroupStore";
 import useChatRoomStore from "@/store/chatRoomStore";
 import SearchContainer from "../SearchContainer";
 import NavBar from "../NavBar";
+import { ChatContact } from "@/types/chat_room";
 
 const SideBarHeader = () => {
-  const { chatGroupData } = useChatGroupStore();
+  const { success, chatGroupData } = useChatGroupStore();
   const { updateChatRoomContact } = useChatRoomStore();
 
   useEffect(() => {
-    if (chatGroupData?.data?.status_code === 200) {
+    if (success) {
       const groupData: ChatContact = {
-        id: "test-id",
         room_id: chatGroupData["data"]["id"],
         is_group: true,
         room_name: chatGroupData["data"]["room_name"],
       };
       updateChatRoomContact(groupData);
-      // setOpen(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatGroupData]);
+  }, [success]);
 
   return (
-    <div className="w-full flex flex-col justify-between border-b-2 items-center">
+    <div className="w-full flex flex-col justify-between items-center">
       <NavBar />
       <SearchContainer />
     </div>

@@ -21,7 +21,7 @@ export const getAllUsers = async () => {
   return response.data;
 };
 
-export const getSingleUser = async (userId: string) => {
+export const getSingleUserApi = async (userId: string) => {
   const response = await api.get(`/v1/users/${userId}`);
   return response.data;
 };

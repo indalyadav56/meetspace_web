@@ -6,7 +6,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Select from "react-select";
 import ClipLoader from "react-spinners/ClipLoader";
-import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -20,7 +19,6 @@ import {
 import useChatGroupStore from "@/store/chatGroupStore";
 import useUserStore from "@/store/userStore";
 import UserAvatar from "./UserAvatar";
-import useChatRoomStore from "@/store/chatRoomStore";
 
 const AddGroupForm = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -64,6 +62,10 @@ const AddGroupForm = () => {
     </div>
   );
 
+  function CustomInput() {
+    return <Input className="h-16 w-full" />;
+  }
+
   return (
     <main>
       <Form {...form}>
@@ -88,7 +90,9 @@ const AddGroupForm = () => {
           <div>
             <FormLabel>Users</FormLabel>
             <Select
+              // components={{ Input: CustomInput }}
               options={users}
+              closeMenuOnSelect={false}
               onChange={onChange}
               getOptionValue={(option: any) => option.id}
               getOptionLabel={(option) => option.email}
@@ -98,7 +102,7 @@ const AddGroupForm = () => {
           </div>
 
           {!loading && (
-            <Button className="w-full h-14" type="submit">
+            <Button className="w-full h-12" type="submit">
               Add Group
             </Button>
           )}

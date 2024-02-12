@@ -1,10 +1,9 @@
-import React from "react";
 import ChatMessageCard from "./ChatMessageCard";
 
 const ChatMessageList = ({ messages }: any) => {
   return (
     <div>
-      {messages?.map((item: any, index: any) => (
+      {messages?.map((item: any, index: number) => (
         <div key={index}>
           <ChatMessageCard item={item} />
         </div>

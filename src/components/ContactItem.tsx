@@ -1,83 +1,115 @@
 "use client";
 
-import React, { useEffect } from "react";
-import UserAvatar from "./UserAvatar";
-import { Dot, MoreHorizontal } from "lucide-react";
-import { Button } from "./ui/button";
+import React from "react";
 
-interface UserAndGroupCardProps {
-  data: {
-    room_id?: string | null;
-    room_name?: string | null;
-    user_id: string;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    is_active: boolean;
-    is_group?: boolean;
-    last_message: string;
-    message_unseen_count?: number;
-  };
-  onUserClick?: () => void;
-  className?: string;
-}
+import UserAvatar from "./UserAvatar";
+import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
+import { CheckCheck, MoreHorizontal } from "lucide-react";
+import { Badge } from "./ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 const ChatContactCard: React.FC<any> = (props) => {
-  const userRef = React.useRef(null);
-  const { data, onUserClick, className, isVisible } = props;
+  const { data, onUserClick } = props;
 
-  const userProfilePath = null;
-  //   process.env.NEXT_PUBLIC_API_BASE_URL +
-  //   "/uploads/" +
-  //   data?.id +
-  //   "/profile/" +
-  //   data?.profile_pic?.temp_name;
+  function utcToGeneralTime(
+    utcTimeString: string,
+    desiredFormat: string = "YYYY-MM-DD HH:mm:ss"
+  ) {
+    try {
+      // Parse UTC time string into a Date object
+      const utcDate = new Date(utcTimeString);
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter") {
-      alert("Enter key pressed!");
+      // Convert to local time zone
+      const localDate = new Date(
+        utcDate.getTime() + utcDate.getTimezoneOffset() * 60000
+      );
+
+      // Format the local date as desired
+      const formattedTime = localDate.toLocaleString(undefined, {
+        timeZone: "UTC",
+        hour12: false,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+      return formattedTime;
+    } catch (error) {
+      console.error("Error converting UTC time:", error);
+      return "Invalid UTC time format"; // Handle invalid input gracefully
     }
-  };
-
-  useEffect(() => {
-    if (data.message_unseen_count) {
-      // dispatch(updateMessageUnseenCount(data.message_unseen_count));
-    }
-  }, [data]);
+  }
 
   return (
-    <div
-      ref={userRef}
-      className={`"h-16 w-full flex gap-2 items-center p-4 ${
-        isVisible && "bg-red-500"
-      }  hover:bg-blue-50 ${className} text-xs"`}
+    <Card
+      className="h-16 w-full cursor-pointer rounded-none border-none drop-shadow-none shadow-none bg-transparent hover:bg-slate-300 dark:hover:bg-stone-500"
       onClick={onUserClick}
-      onKeyDown={handleKeyPress}
     >
-      {data.message_unseen_count ? <Dot color="red" /> : null}
-      <UserAvatar
-        isOnline={data.is_active}
-        // imgSrc={userProfilePath}
-        size="sm"
-      />
-      <div className="flex-1 flex justify-between">
-        <div>
-          <h1>{data.is_group ? data.room_name : data.first_name}</h1>
-          {data.last_message ? (
-            <h1>{data.last_message}</h1>
-          ) : (
-            <h1>{data.email}</h1>
-          )}
-        </div>
+      <CardContent className="group p-0 h-full w-full">
+        <div className="h-full flex justify-between p-1 group-hover:items-center">
+          <div className="flex items-center space-x-4">
+            <UserAvatar isOnline={data.is_active} size="sm" />
+            <div>
+              <p className="font-normal leading-none">
+                {data.is_group
+                  ? data.room_name
+                  : data.first_name + " " + data.last_name}
+              </p>
+              {data.last_message ? (
+                <p className="text-sm mt-2 text-muted-foreground dark:text-white">
+                  {data.last_message}
+                </p>
+              ) : (
+                <p className="text-sm mt-2 text-muted-foreground dark:text-white">
+                  {data.email}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="visible group-hover:invisible flex flex-col items-end justify-between gap-1 p-1 text-xs">
+            <span>{utcToGeneralTime(data.updated_at)}</span>
+            {data.message_unseen_count ? (
+              <Badge>{data.message_unseen_count}</Badge>
+            ) : (
+              <CheckCheck className="h-4 w-4" />
+            )}
+          </div>
 
-        <Button size="icon" onClick={() => alert("hello")}>
-          <MoreHorizontal />
-        </Button>
-        {/* {data.message_unseen_count ? (
-          <Badge variant="destructive">{data.message_unseen_count}</Badge>
-        ) : null} */}
-      </div>
-    </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="hidden group-hover:block bg-transparent rounded-full shadow-none drop-shadow-none border-none"
+              >
+                <MoreHorizontal className="h-6 w-6 group-hover:m-auto " />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="cursor-pointer w-56"
+              align="end"
+              forceMount
+            >
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>Create Group</DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
