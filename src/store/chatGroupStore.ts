@@ -3,6 +3,7 @@ import { create } from "zustand";
 import {
   createChatGroupApi,
   getChatGroupMembersApi,
+  updateChatGroupApi,
 } from "../api/chatGroupApi";
 
 type Store = {
@@ -14,6 +15,7 @@ type Store = {
 
   createChatGroup: (data: any) => Promise<any>;
   getChatGroupMembers: (room_id: string) => Promise<any>;
+  updateChatGroup: (data: any) => Promise<any>;
 };
 
 const useChatGroupStore = create<Store>()((set) => ({
@@ -24,7 +26,7 @@ const useChatGroupStore = create<Store>()((set) => ({
   chatGroupMembers: [],
 
   createChatGroup: async (data: AddChatGroup) => {
-    set({ loading: true });
+    set({ loading: true, success: false });
     createChatGroupApi(data)
       .then((resp: any) => {
         set((state) => ({
@@ -36,6 +38,21 @@ const useChatGroupStore = create<Store>()((set) => ({
         set({ loading: false });
       });
   },
+
+  updateChatGroup: async (data: any) => {
+    set({ loading: true, success: false });
+    updateChatGroupApi(data)
+      .then((resp: any) => {
+        set((state) => ({
+          loading: false,
+          success: true,
+        }));
+      })
+      .catch((error) => {
+        set({ loading: false, success: false });
+      });
+  },
+
   getChatGroupMembers: async (room_id: string) => {
     set({ loading: true });
     getChatGroupMembersApi(room_id).then((resp) => {

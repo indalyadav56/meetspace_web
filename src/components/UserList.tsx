@@ -6,6 +6,7 @@ import UserItem from "./UserItem";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { ChatContact } from "@/types/chat_room";
 import useChatMessageStore from "@/store/chatMessageStore";
+import { useRouter } from "next/navigation";
 
 interface UserListProps {
   data: any[];
@@ -22,6 +23,7 @@ export default function UserList({ data, setIsFocused }: UserListProps) {
   } = useChatRoomStore();
   const { removeCurrentMsgDataState, getChatMessageByRoomId } =
     useChatMessageStore();
+  const router = useRouter();
 
   const onUserClick = (userItem: any) => {
     setChatPreview(false);
@@ -32,12 +34,17 @@ export default function UserList({ data, setIsFocused }: UserListProps) {
 
   useEffect(() => {
     if (chatRoomData && chatRoomData.length > 0) {
+      router.push(
+        `/chat/${chatRoomData[0].chat_room_id}?r_user=${userItem.id}`
+      );
       const contactData: ChatContact = {
         room_id: chatRoomData[0].chat_room_id,
+        room_name: null,
         user_id: userItem.id,
         first_name: userItem.first_name,
         last_name: userItem.last_name,
         email: userItem.email,
+        is_group: false,
       };
       updateChatRoomContact(contactData);
       getChatMessageByRoomId(chatRoomData[0].chat_room_id);

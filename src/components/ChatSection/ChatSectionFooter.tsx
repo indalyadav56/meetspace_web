@@ -37,25 +37,45 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
 
   const sendMessage = (content: string) => {
     if (socket) {
-      socket.send(
-        JSON.stringify({
-          event: constants.event.CHAT_MESSAGE_SENT,
-          data: {
-            content: content,
-            room_id: singleRoomData.id,
-            updated_at: getCurrentUtcTime(),
-            receiver_user: {
-              id: singleRoomData.user_id,
-              first_name: singleRoomData.first_name,
-              last_name: singleRoomData.last_name,
-              email: singleRoomData.email,
+      if (singleRoomData?.is_group) {
+        socket.send(
+          JSON.stringify({
+            event: constants.event.CHAT_MESSAGE_SENT,
+            data: {
+              content: content,
+              is_group: singleRoomData?.is_group,
+              room_id: singleRoomData.id,
+              room_name: singleRoomData?.room_name,
+              updated_at: getCurrentUtcTime(),
+              sender_user: {
+                ...currentUser,
+              },
             },
-            sender_user: {
-              ...currentUser,
+          })
+        );
+      } else {
+        socket.send(
+          JSON.stringify({
+            event: constants.event.CHAT_MESSAGE_SENT,
+            data: {
+              content: content,
+              is_group: singleRoomData?.is_group,
+              room_name: singleRoomData?.room_name,
+              room_id: singleRoomData.id,
+              updated_at: getCurrentUtcTime(),
+              receiver_user: {
+                id: singleRoomData?.room_users?.[0]?.id,
+                first_name: singleRoomData?.room_users[0]?.first_name,
+                last_name: singleRoomData?.room_users?.[0]?.last_name,
+                email: singleRoomData?.room_users?.[0].email,
+              },
+              sender_user: {
+                ...currentUser,
+              },
             },
-          },
-        })
-      );
+          })
+        );
+      }
     }
   };
 

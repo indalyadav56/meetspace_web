@@ -8,12 +8,15 @@ import ChatSectionHeader from "./ChatSectionHeader";
 import constants from "@/constants";
 import useChatMessageStore from "@/store/chatMessageStore";
 import CookieService from "@/lib/cookies";
+import useChatRoomStore from "@/store/chatRoomStore";
+import { ChatContact } from "@/types/chat_room";
 
 const ChatSection = ({ room_id }: { room_id: string }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const { getChatMessageByRoomId } = useChatMessageStore();
   const { addChatMessage } = useChatMessageStore();
+  const { updateChatRoomContact, updateContactByRoomId } = useChatRoomStore();
 
   const token = CookieService.getCookie(constants.token.ACCESS_TOKEN);
 
@@ -24,6 +27,21 @@ const ChatSection = ({ room_id }: { room_id: string }) => {
       const message = JSON.parse(data);
       if (message.event === constants.event.CHAT_MESSAGE_SENT) {
         addChatMessage(message.data);
+        let contactData: ChatContact = {
+          room_id: message.data.room_id,
+          room_name: message.data.room_name,
+          is_group: message.data.is_group,
+          updated_at: message.data.updated_at,
+        };
+        if (!message.data.is_group) {
+          contactData["user_id"] = message.data.receiver_user.id;
+          contactData["first_name"] = message.data.receiver_user.first_name;
+          contactData["last_name"] = message.data.receiver_user.last_name;
+          contactData["email"] = message.data.receiver_user.email;
+          updateChatRoomContact(contactData);
+        } else {
+          updateChatRoomContact(contactData);
+        }
       }
     } catch (err) {
       console.log(err);

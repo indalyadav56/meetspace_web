@@ -23,6 +23,10 @@ export const createChatGroupApi = async (data: AddChatGroup) => {
   return api.post("/v1/chat/groups", data);
 };
 
+export const updateChatGroupApi = async (data: any) => {
+  return api.patch("/v1/chat/groups", data);
+};
+
 export const getChatGroupMembersApi = async (roomId: string) => {
   return api.get(`/v1/chat/group/members/${roomId}`);
 };

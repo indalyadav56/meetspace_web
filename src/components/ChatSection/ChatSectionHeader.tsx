@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { MoreVertical, Phone, UserPlus, Video } from "lucide-react";
-import { cn } from "@/lib/utils";
+import Select from "react-select";
+import { useTheme } from "next-themes";
 
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
@@ -17,44 +18,54 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import { CheckIcon } from "@radix-ui/react-icons";
+import useUserStore from "@/store/userStore";
 
 const ChatSectionHeader = ({ roomId }: { roomId: string }) => {
   const [open, setOpen] = useState(false);
   const [addGroupUser, setAddGroupUser] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const { singleRoomData } = useChatRoomStore();
-  const { getChatGroupMembers, chatGroupMembers } = useChatGroupStore();
+  const { getChatGroupMembers, chatGroupMembers, updateChatGroup } =
+    useChatGroupStore();
   const { getSingleContactData } = useChatRoomStore();
+  const { users } = useUserStore();
 
-  const options = [
-    {
-      label: "test",
-      value: "test",
-    },
-    {
-      label: "test",
-      value: "test",
-    },
-    {
-      label: "test",
-      value: "test",
-    },
-  ];
-  const selectedValues = new Set();
+  const { theme } = useTheme();
 
   useEffect(() => {
+    console.log("room_id", roomId);
     getSingleContactData(roomId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
+
+  const customStyles = {
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: theme === "dark" ? "black" : "#fff",
+    }),
+
+    control: (baseStyles: any, state: any) => ({
+      ...baseStyles,
+      borderColor: "#000064",
+      outline: state.isFocus ? "1px solid #000064" : null,
+      backgroundColor: "dark",
+      borderRadius: 4,
+      minHeight: 40,
+    }),
+
+    singleValue: (provided: any, state: any) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = "opacity 300ms";
+
+      return { ...provided, opacity, transition };
+    },
+  };
+
+  const onChange = (selectedOpts: any) => {
+    const userIds = selectedOpts.map((opt: any) => opt.id);
+    setSelectedUsers(userIds);
+  };
 
   return (
     <main>
@@ -152,56 +163,30 @@ const ChatSectionHeader = ({ roomId }: { roomId: string }) => {
           handleClose={() => setAddGroupUser(false)}
           mainContent={
             <main>
-              <Command>
-                <CommandInput placeholder={"title"} />
-                <CommandList>
-                  <CommandEmpty>No results found.</CommandEmpty>
-                  <CommandGroup>
-                    {options.map((option) => {
-                      const isSelected = selectedValues.has(option.value);
-                      return (
-                        <CommandItem
-                          key={option.value}
-                          onSelect={() => {
-                            if (isSelected) {
-                              selectedValues.delete(option.value);
-                            } else {
-                              selectedValues.add(option.value);
-                            }
-                            const filterValues = Array.from(selectedValues);
-                          }}
-                        >
-                          <div
-                            className={cn(
-                              "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                              isSelected
-                                ? "bg-primary text-primary-foreground"
-                                : "opacity-50 [&_svg]:invisible"
-                            )}
-                          >
-                            <CheckIcon className={cn("h-4 w-4")} />
-                          </div>
-
-                          <span>{option.label}</span>
-                        </CommandItem>
-                      );
-                    })}
-                  </CommandGroup>
-                  {/* {selectedValues.size > 0 && (
-                    <>
-                      <CommandSeparator />
-                      <CommandGroup>
-                        <CommandItem
-                          onSelect={() => column?.setFilterValue(undefined)}
-                          className="justify-center text-center"
-                        >
-                          Clear filters
-                        </CommandItem>
-                      </CommandGroup>
-                    </>
-                  )} */}
-                </CommandList>
-              </Command>
+              <Select
+                options={users}
+                closeMenuOnSelect={false}
+                styles={customStyles}
+                getOptionValue={(option: any) => option.id}
+                getOptionLabel={(option) => option.email}
+                isMulti
+                isSearchable={true}
+                onChange={onChange}
+              />
+            </main>
+          }
+          footerContent={
+            <main>
+              <Button
+                onClick={() =>
+                  updateChatGroup({
+                    room_id: roomId,
+                    user_ids: selectedUsers,
+                  })
+                }
+              >
+                Add
+              </Button>
             </main>
           }
         />

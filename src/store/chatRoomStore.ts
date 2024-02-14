@@ -20,6 +20,7 @@ type Store = {
 
   getChatRoomContactData: () => Promise<void>;
   updateChatRoomContact: (item: any) => Promise<any>;
+  updateContactByRoomId: (item: any) => Promise<any>;
   getSingleContactData: (item: any) => Promise<any>;
   getChatRoomByUserId: (user_id: string) => Promise<any>;
   setChatPreview: (flag: boolean) => void;
@@ -29,13 +30,14 @@ const useChatRoomStore = create<Store>()((set) => ({
   loading: false,
   success: false,
   error: null,
+
   chatRoomContact: [],
   chatRoomData: [],
   chatPreview: true,
   singleRoomData: {},
 
   getChatRoomContactData: async () => {
-    set({ success: false, loading: true });
+    set({ success: false, loading: true, error: null });
     const responseData = await getChatRoomContact();
     set((state: any) => ({
       chatRoomContact: responseData.data,
@@ -43,7 +45,7 @@ const useChatRoomStore = create<Store>()((set) => ({
   },
 
   getSingleContactData: async (room_id: string) => {
-    set({ success: false, loading: true });
+    set({ success: false, loading: true, error: null });
     getSingleChatRoomApi(room_id)
       .then((res) => {
         set({
@@ -52,7 +54,7 @@ const useChatRoomStore = create<Store>()((set) => ({
         });
       })
       .catch((err) => {
-        set({ loading: false, chatPreview: false });
+        set({ loading: false, chatPreview: false, singleRoomData: {} });
       });
   },
 
@@ -60,10 +62,43 @@ const useChatRoomStore = create<Store>()((set) => ({
     set({ success: false, loading: true });
     set((state) => {
       if (state.chatRoomContact) {
+        if (!item.is_group) {
+          return {
+            chatRoomContact: [
+              item,
+              ...state.chatRoomContact.filter(
+                (i) => i.user_id !== item.user_id
+              ),
+            ],
+            chatRoomData: [],
+          };
+        } else {
+          return {
+            chatRoomContact: [
+              item,
+              ...state.chatRoomContact.filter(
+                (i) => i.room_id !== item.room_id
+              ),
+            ],
+            chatRoomData: [],
+          };
+        }
+      }
+      return {
+        chatRoomContact: [item],
+        chatRoomData: [],
+      };
+    });
+  },
+
+  updateContactByRoomId: async (item: ChatContact) => {
+    set({ success: false, loading: true });
+    set((state) => {
+      if (state.chatRoomContact) {
         return {
           chatRoomContact: [
             item,
-            ...state.chatRoomContact.filter((i) => i.user_id !== item.user_id),
+            ...state.chatRoomContact.filter((i) => i.room_id !== item.room_id),
           ],
           chatRoomData: [],
         };
