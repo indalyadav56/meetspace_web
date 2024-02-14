@@ -27,7 +27,7 @@ const DialogBox: React.FC<DialogProps> = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{desciption}</DialogDescription>

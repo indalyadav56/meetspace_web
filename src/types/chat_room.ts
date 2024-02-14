@@ -4,9 +4,8 @@ interface UpdateUser {
   profile_pic?: File;
 }
 
-interface ChatContactItem {
-  id?: string;
-  room_id?: string | null;
+export type ChatContact = {
+  room_id: string;
   room_name?: string | null;
   user_id?: string;
   first_name?: string;
@@ -16,4 +15,5 @@ interface ChatContactItem {
   is_group?: boolean;
   last_message?: string;
   message_unseen_count?: number;
-}
+  updated_at?: string;
+};

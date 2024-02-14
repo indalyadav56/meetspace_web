@@ -1,51 +1,130 @@
 import { create } from "zustand";
-import { getChatRoomContact } from "../api/chatRoomApi";
+
+import {
+  getChatRoomContact,
+  getChatRoomByUserIdApi,
+  getSingleChatRoomApi,
+} from "../api/chatRoomApi";
+import { ChatContact } from "@/types/chat_room";
 
 type Store = {
-  chatRoomContact: ChatContactItem[];
+  loading: boolean;
+  success: boolean;
+  error: [] | null;
+
+  chatRoomContact: ChatContact[];
+  chatRoomData: any;
+  chatPreview: boolean;
+
+  singleRoomData: any;
+
   getChatRoomContactData: () => Promise<void>;
   updateChatRoomContact: (item: any) => Promise<any>;
+  updateContactByRoomId: (item: any) => Promise<any>;
+  getSingleContactData: (item: any) => Promise<any>;
+  getChatRoomByUserId: (user_id: string) => Promise<any>;
+  setChatPreview: (flag: boolean) => void;
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
+  loading: false,
+  success: false,
+  error: null,
+
   chatRoomContact: [],
+  chatRoomData: [],
+  chatPreview: true,
+  singleRoomData: {},
 
   getChatRoomContactData: async () => {
+    set({ success: false, loading: true, error: null });
     const responseData = await getChatRoomContact();
     set((state: any) => ({
       chatRoomContact: responseData.data,
     }));
   },
 
-  updateChatRoomContact: async (item: ChatContactItem) =>
+  getSingleContactData: async (room_id: string) => {
+    set({ success: false, loading: true, error: null });
+    getSingleChatRoomApi(room_id)
+      .then((res) => {
+        set({
+          singleRoomData: res.data.data,
+          chatPreview: false,
+        });
+      })
+      .catch((err) => {
+        set({ loading: false, chatPreview: false, singleRoomData: {} });
+      });
+  },
+
+  updateChatRoomContact: async (item: ChatContact) => {
+    set({ success: false, loading: true });
     set((state) => {
-      let contacts: ChatContactItem[] = [];
       if (state.chatRoomContact) {
-        contacts = [...state.chatRoomContact];
-
-        const userIndex = contacts.findIndex((c) => c.user_id === item?.id);
-
-        const chatRoomIndex = contacts.findIndex(
-          (c) => c.room_id === item?.room_id
-        );
-
-        console.log("state itemIndex: item", contacts);
-        console.log("itemIndex: item", item);
-        console.log("userIndex", userIndex);
-        console.log("itemIndex", chatRoomIndex);
-        if (userIndex) {
-          contacts.unshift(item);
+        if (!item.is_group) {
+          return {
+            chatRoomContact: [
+              item,
+              ...state.chatRoomContact.filter(
+                (i) => i.user_id !== item.user_id
+              ),
+            ],
+            chatRoomData: [],
+          };
+        } else {
+          return {
+            chatRoomContact: [
+              item,
+              ...state.chatRoomContact.filter(
+                (i) => i.room_id !== item.room_id
+              ),
+            ],
+            chatRoomData: [],
+          };
         }
-        if (chatRoomIndex < 0) {
-          contacts.unshift(item);
-        }
-      } else {
-        contacts.unshift(item);
       }
       return {
-        chatRoomContact: contacts,
+        chatRoomContact: [item],
+        chatRoomData: [],
       };
-    }),
+    });
+  },
+
+  updateContactByRoomId: async (item: ChatContact) => {
+    set({ success: false, loading: true });
+    set((state) => {
+      if (state.chatRoomContact) {
+        return {
+          chatRoomContact: [
+            item,
+            ...state.chatRoomContact.filter((i) => i.room_id !== item.room_id),
+          ],
+          chatRoomData: [],
+        };
+      }
+      return {
+        chatRoomContact: [item],
+        chatRoomData: [],
+      };
+    });
+  },
+
+  getChatRoomByUserId: async (user_id: string) => {
+    set({ success: false, loading: true });
+    getChatRoomByUserIdApi(user_id)
+      .then((resp) => {
+        set((state) => ({ chatRoomData: resp.data.data }));
+        return resp.data.data;
+      })
+      .catch((err) => {
+        return err;
+      });
+  },
+
+  setChatPreview: (flag) => {
+    set({ chatPreview: flag });
+  },
 }));
 
 export default useChatRoomStore;

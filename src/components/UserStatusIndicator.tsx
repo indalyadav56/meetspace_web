@@ -1,6 +1,6 @@
 "use client";
 
-function UserStatusIndicator({ isOnline }) {
+function UserStatusIndicator({ isOnline }: any) {
   if (isOnline) {
     return (
       <span className="w-4 h-4 rounded-full bg-green-500 border-2 border-white absolute bottom-0.5 right-0.5"></span>

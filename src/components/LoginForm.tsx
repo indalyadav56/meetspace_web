@@ -6,6 +6,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -19,11 +20,9 @@ import {
 } from "@/components/ui/form";
 import useAuthStore from "@/store/authStore";
 import { useEffect } from "react";
-import CookieService from "@/lib/cookies";
-import constants from "@/constants";
 
 const LoginForm = () => {
-  const { loginUser, resetForm, loading, error, message, success, authData } =
+  const { loginUser, loading, error, message, success, actionType } =
     useAuthStore();
 
   const router = useRouter();
@@ -53,7 +52,7 @@ const LoginForm = () => {
   useEffect(() => {
     if (error && message) {
       notify(message);
-      error.forEach((err) => {
+      error.forEach((err: any) => {
         form.setError(err?.field, {
           type: "manual",
           message: err?.message,
@@ -65,12 +64,8 @@ const LoginForm = () => {
   }, [error, message]);
 
   useEffect(() => {
-    if (success) {
-      CookieService.setCookie(
-        constants.token.ACCESS_TOKEN,
-        authData.data.token.access
-      );
-      router.push("/");
+    if (success && actionType == "login") {
+      router.push("/chat");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
@@ -79,7 +74,11 @@ const LoginForm = () => {
     <main>
       <ToastContainer />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          method="post"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8"
+        >
           <FormField
             control={form.control}
             name="email"
@@ -106,10 +105,15 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
-
-          <Button className="w-full h-14" type="submit">
-            Submit
-          </Button>
+          {loading ? (
+            <div className="w-full flex justify-center">
+              <ClipLoader size={60} loading={loading} />
+            </div>
+          ) : (
+            <Button className="w-full h-14" type="submit">
+              Submit
+            </Button>
+          )}
         </form>
       </Form>
     </main>

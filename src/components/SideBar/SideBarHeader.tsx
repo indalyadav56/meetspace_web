@@ -1,48 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { useEffect } from "react";
 
-import { Button } from "@/components/ui/button";
-import DialogBox from "../DialogBox";
-import AddGroupForm from "../AddGroupForm";
 import useChatGroupStore from "@/store/chatGroupStore";
 import useChatRoomStore from "@/store/chatRoomStore";
+import SearchContainer from "../SearchContainer";
+import NavBar from "../NavBar";
+import { ChatContact } from "@/types/chat_room";
 
 const SideBarHeader = () => {
-  const [open, setOpen] = useState(false);
-  const { chatGroupData } = useChatGroupStore();
+  const { success, chatGroupData } = useChatGroupStore();
   const { updateChatRoomContact } = useChatRoomStore();
 
   useEffect(() => {
-    if (chatGroupData?.data?.status_code === 200) {
-      const groupData: ChatContactItem = {
+    if (success) {
+      const groupData: ChatContact = {
         room_id: chatGroupData["data"]["id"],
         is_group: true,
         room_name: chatGroupData["data"]["room_name"],
       };
       updateChatRoomContact(groupData);
-      setOpen(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatGroupData]);
+  }, [success]);
 
   return (
-    <div className="w-full h-16 flex justify-between border-b-2 items-center p-2">
-      <h1 className="text-xl">Chat</h1>
-
-      <div className="flex gap-1">
-        <Button variant="outline" size="icon" onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
-
-      <DialogBox
-        open={open}
-        handleClose={() => setOpen(false)}
-        title="Add Group"
-        mainContent={<AddGroupForm />}
-      />
+    <div className="w-full flex flex-col justify-between items-center">
+      <NavBar />
+      <SearchContainer />
     </div>
   );
 };

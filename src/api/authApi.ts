@@ -17,7 +17,7 @@ interface RegisterData {
 }
 
 interface LogoutData {
-  token: string;
+  refresh_token: string;
 }
 
 const api = axios.create({
@@ -25,7 +25,6 @@ const api = axios.create({
 });
 
 api.interceptors.response.use((resp) => {
-  console.log("interception response received", resp);
   return resp;
 });
 
@@ -37,6 +36,11 @@ export const register = (data: RegisterData) => {
   return api.post("/v1/auth/register", data);
 };
 
-export const logout = async (data: LogoutData): Promise<AxiosResponse> => {
-  return api.post("/v1/auth/logout", data);
+export const logout = async (data: any): Promise<AxiosResponse> => {
+  const token = CookieService.getCookie("meetspace_access_token");
+  return api.post("/v1/auth/logout", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };

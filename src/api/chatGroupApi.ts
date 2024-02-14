@@ -9,7 +9,7 @@ interface ChatGroupData {
 interface ChatGroupMember {}
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
-console.log("baseURL", baseURL);
+
 const api = axios.create({
   baseURL,
   headers: {
@@ -19,14 +19,14 @@ const api = axios.create({
   },
 });
 
-export const createChatGroupApi = async (
-  data: AddChatGroup
-): Promise<AxiosResponse> => {
+export const createChatGroupApi = async (data: AddChatGroup) => {
   return api.post("/v1/chat/groups", data);
 };
 
-export const getChatGroupMembers = async (
-  roomId: string
-): Promise<AxiosResponse<ChatGroupMember[]>> => {
+export const updateChatGroupApi = async (data: any) => {
+  return api.patch("/v1/chat/groups", data);
+};
+
+export const getChatGroupMembersApi = async (roomId: string) => {
   return api.get(`/v1/chat/group/members/${roomId}`);
 };

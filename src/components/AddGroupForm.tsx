@@ -6,7 +6,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Select from "react-select";
 import ClipLoader from "react-spinners/ClipLoader";
-import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -20,9 +19,10 @@ import {
 import useChatGroupStore from "@/store/chatGroupStore";
 import useUserStore from "@/store/userStore";
 import UserAvatar from "./UserAvatar";
-import useChatRoomStore from "@/store/chatRoomStore";
+import { useTheme } from "next-themes";
 
 const AddGroupForm = () => {
+  const { theme } = useTheme();
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const { createChatGroup, loading } = useChatGroupStore();
@@ -64,6 +64,29 @@ const AddGroupForm = () => {
     </div>
   );
 
+  const customStyles = {
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: theme === "dark" ? "black" : "#fff",
+    }),
+
+    control: (baseStyles: any, state: any) => ({
+      ...baseStyles,
+      borderColor: "#000064",
+      outline: state.isFocus ? "1px solid #000064" : null,
+      backgroundColor: "dark",
+      borderRadius: 4,
+      minHeight: 40,
+    }),
+
+    singleValue: (provided: any, state: any) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = "opacity 300ms";
+
+      return { ...provided, opacity, transition };
+    },
+  };
+
   return (
     <main>
       <Form {...form}>
@@ -89,7 +112,9 @@ const AddGroupForm = () => {
             <FormLabel>Users</FormLabel>
             <Select
               options={users}
+              closeMenuOnSelect={false}
               onChange={onChange}
+              styles={customStyles}
               getOptionValue={(option: any) => option.id}
               getOptionLabel={(option) => option.email}
               formatOptionLabel={formatUserLabel}
@@ -98,7 +123,7 @@ const AddGroupForm = () => {
           </div>
 
           {!loading && (
-            <Button className="w-full h-14" type="submit">
+            <Button className="w-full h-12" type="submit">
               Add Group
             </Button>
           )}

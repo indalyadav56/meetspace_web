@@ -22,7 +22,7 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
       case "sm":
         return "w-10 h-10";
       case "md":
-        return "w-14 h-14";
+        return "w-12 h-12";
       case "lg":
         return "w-20 h-20";
       case "xl":

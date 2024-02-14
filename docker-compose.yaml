@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  meetspace_frontend:
+    build: .
+    restart: always
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    env_file: .env.local
+
+  # nginx:
+  #   build: ./nginx
+  #   container_name: meetspace_nginx
+  #   ports:
+  #     - "8010:8010"

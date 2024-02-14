@@ -1,38 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import ChatSectionContent from "./ChatSectionContent";
 import ChatSectionFooter from "./ChatSectionFooter";
 import ChatSectionHeader from "./ChatSectionHeader";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStoreHook";
-import { addChatMessageData } from "@/redux/features/chatMessage/chatMessageSlice";
-import Cookies from "js-cookie";
-import { useSocket } from "@/context/Socket";
 import constants from "@/constants";
-import { updateChatRoomContactIndex } from "@/redux/features/chatRoom/chatRoomSlice";
+import useChatMessageStore from "@/store/chatMessageStore";
+import CookieService from "@/lib/cookies";
+import useChatRoomStore from "@/store/chatRoomStore";
+import { ChatContact } from "@/types/chat_room";
 
-const ChatSection = () => {
+const ChatSection = ({ room_id }: { room_id: string }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  const dispatch = useAppDispatch();
-  const currentUserId = Cookies.get("currentUserId");
-  const token = Cookies.get("meetspace_access_token");
-  const globalSocket = useSocket();
-  const chatRoomId = useAppSelector(
-    (state) => state.chatMessageReducer.receiverUserId
-  );
-  const receiverUser = useAppSelector(
-    (state) => state.chatRoomReducer.receiverUser
-  );
-  const web_socket_url = `${process.env.NEXT_PUBLIC_WS_API_BASE_URL}/v1/chat/${chatRoomId}?token=${token}`;
+  const { getChatMessageByRoomId } = useChatMessageStore();
+  const { addChatMessage } = useChatMessageStore();
+  const { updateChatRoomContact, updateContactByRoomId } = useChatRoomStore();
+
+  const token = CookieService.getCookie(constants.token.ACCESS_TOKEN);
+
+  const url = `${process.env.NEXT_PUBLIC_WS_API_BASE_URL}/v1/chat/${room_id}?token=${token}`;
 
   const handlEvent = async (data: string) => {
     try {
       const message = JSON.parse(data);
-      console.log("chat ws message:- ", message);
       if (message.event === constants.event.CHAT_MESSAGE_SENT) {
-        dispatch(addChatMessageData(message.data));
-        dispatch(updateChatRoomContactIndex(receiverUser));
+        addChatMessage(message.data);
+        let contactData: ChatContact = {
+          room_id: message.data.room_id,
+          room_name: message.data.room_name,
+          is_group: message.data.is_group,
+          updated_at: message.data.updated_at,
+        };
+        if (!message.data.is_group) {
+          contactData["user_id"] = message.data.receiver_user.id;
+          contactData["first_name"] = message.data.receiver_user.first_name;
+          contactData["last_name"] = message.data.receiver_user.last_name;
+          contactData["email"] = message.data.receiver_user.email;
+          updateChatRoomContact(contactData);
+        } else {
+          updateChatRoomContact(contactData);
+        }
       }
     } catch (err) {
       console.log(err);
@@ -40,20 +49,34 @@ const ChatSection = () => {
   };
 
   useEffect(() => {
-    const newSocket = new WebSocket(web_socket_url);
+    const newSocket = new WebSocket(url);
     setSocket(newSocket);
 
+    // newSocket.onopen = (event) => {
+    // console.log("connection open", event);
+    // };
+
+    // newSocket.onerror = (event) => {
+    // console.log("connection err:=>", event);
+    // };
+
     newSocket.onmessage = (event) => {
+      console.log("on chat-messagge=>", event.data);
       handlEvent(event.data);
     };
 
     return () => newSocket.close();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setSocket, chatRoomId]);
+  }, [setSocket, url]);
+
+  useEffect(() => {
+    getChatMessageByRoomId(room_id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room_id]);
 
   return (
     <div className="flex-1 flex flex-col">
-      <ChatSectionHeader />
+      <ChatSectionHeader roomId={room_id} />
       <ChatSectionContent />
       <ChatSectionFooter socket={socket} />
     </div>

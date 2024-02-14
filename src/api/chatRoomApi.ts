@@ -21,9 +21,12 @@ export const createChatRoom = async (
   return response;
 };
 
-export const getChatRooms = async (): Promise<AxiosResponse<ChatRoom[]>> => {
-  const response = await api.get("/v1/chat/rooms");
-  return response;
+export const getChatRoomByUserIdApi = async (user_id: string) => {
+  return api.get(`/v1/chat/rooms?user_id=${user_id}`);
+};
+
+export const getSingleChatRoomApi = async (room_id: string) => {
+  return api.get(`/v1/chat/rooms?room_id=${room_id}`);
 };
 
 export const getSingleChatRoom = async (
@@ -34,6 +37,6 @@ export const getSingleChatRoom = async (
 };
 
 export const getChatRoomContact = async (): Promise<AxiosResponse<any>> => {
-  const response = await api.get(`/v1/chat/room/contact`);
+  const response = await api.get(`/v1/chat/contact`);
   return response.data;
 };

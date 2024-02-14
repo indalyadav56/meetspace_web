@@ -12,7 +12,7 @@ const api = axios.create({
   },
 });
 
-export const getChatMessages = async (
+export const getChatMessageByRoomIdApi = async (
   chatRoomId: string
 ): Promise<AxiosResponse<Message[]>> => {
   return api.get(`/v1/chat/messages/${chatRoomId}`);
