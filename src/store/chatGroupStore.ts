@@ -31,11 +31,12 @@ const useChatGroupStore = create<Store>()((set) => ({
       .then((resp: any) => {
         set((state) => ({
           loading: false,
+          success: true,
           chatGroupData: resp.data.data,
         }));
       })
       .catch((error) => {
-        set({ loading: false });
+        set({ loading: false, success: false });
       });
   },
 

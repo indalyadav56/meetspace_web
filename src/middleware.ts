@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
 
   if (publicPath) {
     if (cookie_data)
-      return NextResponse.redirect(new URL("/chat", request.nextUrl));
+      return NextResponse.redirect(new URL("/", request.nextUrl));
     else {
       // alert("Could not find token, kindly login agin");
     }
@@ -19,5 +19,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/chat", "/login", "/register"],
+  matcher: ["/", "/login", "/register"],
 };

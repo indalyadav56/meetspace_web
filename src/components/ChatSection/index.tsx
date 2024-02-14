@@ -11,16 +11,16 @@ import CookieService from "@/lib/cookies";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { ChatContact } from "@/types/chat_room";
 
-const ChatSection = ({ room_id }: { room_id: string }) => {
+const ChatSection = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const { getChatMessageByRoomId } = useChatMessageStore();
   const { addChatMessage } = useChatMessageStore();
-  const { updateChatRoomContact, updateContactByRoomId } = useChatRoomStore();
+  const { updateChatRoomContact, singleRoomData } = useChatRoomStore();
 
   const token = CookieService.getCookie(constants.token.ACCESS_TOKEN);
 
-  const url = `${process.env.NEXT_PUBLIC_WS_API_BASE_URL}/v1/chat/${room_id}?token=${token}`;
+  const url = `${process.env.NEXT_PUBLIC_WS_API_BASE_URL}/v1/chat/${singleRoomData.id}?token=${token}`;
 
   const handlEvent = async (data: string) => {
     try {
@@ -70,13 +70,13 @@ const ChatSection = ({ room_id }: { room_id: string }) => {
   }, [setSocket, url]);
 
   useEffect(() => {
-    getChatMessageByRoomId(room_id);
+    getChatMessageByRoomId(singleRoomData.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [room_id]);
+  }, [singleRoomData]);
 
   return (
     <div className="flex-1 flex flex-col">
-      <ChatSectionHeader roomId={room_id} />
+      <ChatSectionHeader />
       <ChatSectionContent />
       <ChatSectionFooter socket={socket} />
     </div>

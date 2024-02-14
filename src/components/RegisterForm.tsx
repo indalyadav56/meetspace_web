@@ -85,7 +85,7 @@ const RegisterForm = () => {
         constants.token.REFRESH_TOKEN,
         authData.data.token.refresh
       );
-      router.push("/chat");
+      router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);

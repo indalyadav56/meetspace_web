@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import constants from "../../constants";
-import { getUserIdFromToken } from "../../lib/jwt";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import useUserStore from "@/store/userStore";

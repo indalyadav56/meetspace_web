@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import useChatMessageStore from "@/store/chatMessageStore";
 import ChatContactItem from "./ContactItem";
 import useChatRoomStore from "@/store/chatRoomStore";
@@ -15,10 +13,10 @@ interface ChatContactListProps {
 const ChatContactList: React.FC<ChatContactListProps> = (props) => {
   const { data, setIsFocused } = props;
 
-  const router = useRouter();
+  const { getSingleContactData } = useChatRoomStore();
 
   const onItemClick = (contact: ChatContact) => {
-    router.push(`/chat/${contact.room_id}`);
+    getSingleContactData(contact);
     useChatMessageStore.setState({ chatMessageData: [] });
     if (setIsFocused) setIsFocused(false);
   };

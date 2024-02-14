@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MoreVertical, Phone, UserPlus, Video } from "lucide-react";
 import Select from "react-select";
 import { useTheme } from "next-themes";
@@ -20,7 +20,7 @@ import {
 } from "../ui/dropdown-menu";
 import useUserStore from "@/store/userStore";
 
-const ChatSectionHeader = ({ roomId }: { roomId: string }) => {
+const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
   const [addGroupUser, setAddGroupUser] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -28,16 +28,9 @@ const ChatSectionHeader = ({ roomId }: { roomId: string }) => {
   const { singleRoomData } = useChatRoomStore();
   const { getChatGroupMembers, chatGroupMembers, updateChatGroup } =
     useChatGroupStore();
-  const { getSingleContactData } = useChatRoomStore();
   const { users } = useUserStore();
 
   const { theme } = useTheme();
-
-  useEffect(() => {
-    console.log("room_id", roomId);
-    getSingleContactData(roomId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId]);
 
   const customStyles = {
     option: (provided: any, state: any) => ({
@@ -180,7 +173,7 @@ const ChatSectionHeader = ({ roomId }: { roomId: string }) => {
               <Button
                 onClick={() =>
                   updateChatGroup({
-                    room_id: roomId,
+                    room_id: "roomId",
                     user_ids: selectedUsers,
                   })
                 }

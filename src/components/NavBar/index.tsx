@@ -33,6 +33,9 @@ import {
 } from "../ui/alert-dialog";
 import { Label } from "../ui/label";
 import useAuthStore from "@/store/authStore";
+import useChatGroupStore from "@/store/chatGroupStore";
+import { ChatContact } from "@/types/chat_room";
+import useChatRoomStore from "@/store/chatRoomStore";
 
 const NavBar = () => {
   const [accountDialog, setAccountDialog] = useState<boolean>(false);
@@ -42,6 +45,8 @@ const NavBar = () => {
   const router = useRouter();
   const { getUserProfile, currentUser } = useUserStore();
   const { logoutUser, loading, success, actionType } = useAuthStore();
+  const { success: chatGroupSuccess, chatGroupData } = useChatGroupStore();
+  const { updateContactByRoomId } = useChatRoomStore();
 
   useEffect(() => {
     getUserProfile();
@@ -58,6 +63,20 @@ const NavBar = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
+
+  useEffect(() => {
+    if (chatGroupSuccess) {
+      const groupData: ChatContact = {
+        room_id: chatGroupData["id"],
+        is_group: true,
+        room_name: chatGroupData["room_name"],
+        updated_at: new Date().toUTCString(),
+      };
+      updateContactByRoomId(groupData);
+      setGroupDialog(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatGroupSuccess]);
 
   return (
     <main className="w-full h-16">
