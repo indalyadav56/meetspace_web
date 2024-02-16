@@ -11,7 +11,7 @@ const ChatMessageCard = ({ item }: any) => {
       <div className="w-full my-2 flex justify-center items-center">
         <hr className="w-full my-4 " />
         <span className="px-2 text-sm">{item.timestamp}</span>
-        <hr className="w-full " />
+        <hr className="w-full" />
       </div>
       {item?.chat_message?.map((msg: any) => (
         <main
@@ -25,18 +25,21 @@ const ChatMessageCard = ({ item }: any) => {
               <UserAvatar size="sm" isOnline={msg?.sender_user?.is_active} />
             ) : null}
             <div className="">
-              <div className="flex gap-2 text-sm">
-                {currentUserId !== msg?.sender_user.id ? (
+              {currentUserId !== msg?.sender_user.id ? (
+                <div className="flex gap-2 text-sm my-1">
                   <span>
                     {msg?.sender_user?.first_name}{" "}
                     {item?.sender_user?.last_name}
                   </span>
-                ) : null}
-                {/* <p>10:00 AM</p> */}
-              </div>
-              <Card>
+                  <p className="text-end text-xs my-1">02/20/2024 10:02 PM</p>
+                </div>
+              ) : null}
+              {currentUserId === msg?.sender_user.id ? (
+                <p className="text-end text-xs my-1">02/20/2024 10:02 PM</p>
+              ) : null}
+              <Card className="p-1">
                 <div className="text-sm p-2 rounded-sm break-words my-1">
-                  <div className="p-2">{msg?.content}</div>
+                  <div className="p-2 w-auto max-w-md">{msg?.content}</div>
                 </div>
               </Card>
               {currentUserId === msg?.sender_user.id ? (

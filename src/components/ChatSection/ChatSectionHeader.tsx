@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MoreVertical, Phone, UserPlus, Video } from "lucide-react";
 import Select from "react-select";
 import { useTheme } from "next-themes";
@@ -19,13 +19,25 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import useUserStore from "@/store/userStore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
   const [addGroupUser, setAddGroupUser] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
 
-  const { singleRoomData } = useChatRoomStore();
+  const { singleRoomData, deleteChatGroup, deleteContactByRoomId } =
+    useChatRoomStore();
   const { getChatGroupMembers, chatGroupMembers, updateChatGroup } =
     useChatGroupStore();
   const { users } = useUserStore();
@@ -68,7 +80,9 @@ const ChatSectionHeader = () => {
             isOnline={true}
             onClick={() => {
               setOpen(true);
-              getChatGroupMembers(singleRoomData.id);
+              if (singleRoomData?.is_group) {
+                getChatGroupMembers(singleRoomData.id);
+              }
             }}
             size="sm"
           />
@@ -86,12 +100,12 @@ const ChatSectionHeader = () => {
           )}
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <Button variant="ghost" size="icon">
+          {/* <Button variant="ghost" size="icon">
             <Video />
           </Button>
           <Button variant="ghost" size="icon">
             <Phone />
-          </Button>
+          </Button> */}
           {singleRoomData?.is_group ? (
             <Button
               variant="ghost"
@@ -114,7 +128,9 @@ const ChatSectionHeader = () => {
               forceMount
             >
               <DropdownMenuGroup>
-                <DropdownMenuItem>Create Group</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setDeleteDialog(true)}>
+                  Delete
+                </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -184,6 +200,32 @@ const ChatSectionHeader = () => {
           }
         />
       </div>
+
+      {/* deltee alert */}
+      <AlertDialog open={deleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              are you sure you want to logout.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialog(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                deleteContactByRoomId(singleRoomData.id);
+                deleteChatGroup(singleRoomData.id);
+                setDeleteDialog(false);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 };

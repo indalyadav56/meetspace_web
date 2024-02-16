@@ -58,7 +58,7 @@ const useUserStore = create<Store>()((set) => ({
 
   getUserProfile: async () => {
     set({ loading: true, success: false });
-    getUserProfileApi()
+    await getUserProfileApi()
       .then((response) => {
         set({ currentUser: response.data, loading: false, success: true });
       })

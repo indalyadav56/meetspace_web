@@ -4,6 +4,7 @@ import {
   getChatRoomContact,
   getChatRoomByUserIdApi,
   getSingleChatRoomApi,
+  deleteChatRoomApi,
 } from "../api/chatRoomApi";
 import { ChatContact } from "@/types/chat_room";
 
@@ -24,6 +25,8 @@ type Store = {
   getSingleContactData: (item: any) => Promise<any>;
   getChatRoomByUserId: (user_id: string) => Promise<any>;
   setChatPreview: (flag: boolean) => void;
+  deleteChatGroup: (roomID: string) => Promise<any>;
+  deleteContactByRoomId: (roomID: string) => Promise<any>;
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
@@ -42,6 +45,20 @@ const useChatRoomStore = create<Store>()((set) => ({
     set((state: any) => ({
       chatRoomContact: responseData.data,
     }));
+  },
+
+  deleteChatGroup: async (roomID: string) => {
+    set({ loading: true, success: false, error: null });
+    deleteChatRoomApi(roomID)
+      .then((resp: any) => {
+        set((state) => ({
+          loading: false,
+          success: true,
+        }));
+      })
+      .catch((error) => {
+        set({ loading: false, success: false, error: [] });
+      });
   },
 
   getSingleContactData: async (room_data: ChatContact) => {
@@ -89,11 +106,11 @@ const useChatRoomStore = create<Store>()((set) => ({
     set((state) => {
       if (state.chatRoomContact) {
         if (!item.is_group) {
-          console.log("currentuser item in contactlist", item);
           return {
             singleRoomData: {
               id: item.room_id,
               room_name: item.room_name,
+              is_group: false,
               room_users: [
                 {
                   id: item.user_id,
@@ -111,22 +128,13 @@ const useChatRoomStore = create<Store>()((set) => ({
             ],
             chatRoomData: [],
           };
-        } else {
-          return {
-            chatRoomContact: [
-              item,
-              ...state.chatRoomContact.filter(
-                (i) => i.room_id !== item.room_id
-              ),
-            ],
-            chatRoomData: [],
-          };
         }
       }
       return {
         singleRoomData: {
           id: item.room_id,
           room_name: item.room_name,
+          is_group: false,
           room_users: [
             {
               id: item.user_id,
@@ -143,32 +151,57 @@ const useChatRoomStore = create<Store>()((set) => ({
   },
 
   updateContactByRoomId: async (item: ChatContact) => {
-    set({ success: false, loading: true });
     set((state) => {
       if (state.chatRoomContact) {
         return {
+          singleRoomData: {
+            id: item.room_id,
+            room_name: item.room_name,
+            is_group: false,
+            room_users: [
+              {
+                id: item.user_id,
+                first_name: item.first_name,
+                last_name: item.last_name,
+                email: item.email,
+              },
+            ],
+          },
           chatRoomContact: [
             item,
             ...state.chatRoomContact.filter((i) => i.room_id !== item.room_id),
           ],
           chatRoomData: [],
-          chatPreview: false,
-          singleRoomData: {
-            id: item.room_id,
-            room_name: item.room_name,
-            is_group: true,
-          },
         };
       }
       return {
-        chatRoomContact: [item],
-        chatRoomData: [],
-        chatPreview: false,
         singleRoomData: {
           id: item.room_id,
           room_name: item.room_name,
-          is_group: true,
+          is_group: false,
+          room_users: [
+            {
+              id: item.user_id,
+              first_name: item.first_name,
+              last_name: item.last_name,
+              email: item.email,
+            },
+          ],
         },
+        chatRoomContact: [item],
+        chatRoomData: [],
+      };
+    });
+  },
+
+  deleteContactByRoomId: async (roomId: string) => {
+    set((state) => {
+      const contactData = state.chatRoomContact.filter(
+        (item: ChatContact) => item.room_id !== roomId
+      );
+      return {
+        chatRoomContact: contactData,
+        chatPreview: true,
       };
     });
   },

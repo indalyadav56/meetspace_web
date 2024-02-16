@@ -1,29 +1,21 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
+import React, { useEffect } from 'react'
 
-import ChatSection from "@/components/ChatSection";
-import { useSocket } from "@/context/Socket";
-import useUserStore from "@/store/userStore";
-import ChatPreview from "@/components/ChatPreview";
-import useChatRoomStore from "@/store/chatRoomStore";
-import { ChatContact } from "@/types/chat_room";
-import { getUserIdFromToken } from "@/lib/jwt";
+import ChatPreview from '@/components/ChatPreview'
+import ChatSection from '@/components/ChatSection'
+import SideBar from '@/components/SideBar'
+import useChatRoomStore from '@/store/chatRoomStore'
+import useUserStore from '@/store/userStore'
+import { useSocket } from '@/context/Socket'
 import constants from "@/constants";
-import { useParams } from "next/navigation";
-import SideBar from "@/components/SideBar";
+import { ChatContact } from '@/types/chat_room'
 
-export default function ChatArea() {
-  const params = useParams();
+export default function Root() {
+  const { chatPreview } = useChatRoomStore();
+  const { getUserProfile, getAllUsers } = useUserStore();
   const socket = useSocket();
 
-  const currentUserId = getUserIdFromToken();
-
-  const currentRoomId = params.roomid as string;
-  const receiverUser = null;
-
-  const { getAllUsers } = useUserStore();
-  const { chatPreview, updateChatRoomContact } = useChatRoomStore();
 
   async function showNotification(title: string, message: string) {
     if (!("Notification" in window)) {
@@ -41,16 +33,17 @@ export default function ChatArea() {
     socket?.send(
       JSON.stringify({
         event: constants.event.CHAT_NOTIFICATION_RECEIVED,
-        data: receiverUser,
+        data: "receiverUser",
       })
     );
   }
+
   const handleGlobalEvent = (data: string) => {
     const message = JSON.parse(data);
     console.log("globalSocket:->", message);
     if (
       message.event === constants.event.CHAT_NOTIFICATION_SENT &&
-      message.data.receiver_user.id === currentUserId
+      message.data.receiver_user.id === 'currentUserId'
     ) {
       showNotification("New Message", message.data.content);
       const contactData: ChatContact = {
@@ -63,9 +56,15 @@ export default function ChatArea() {
         last_message: message.data.content,
         updated_at: message.data.updated_at,
       };
-      updateChatRoomContact(contactData);
+      // updateChatRoomContact(contactData);
     }
   };
+
+
+  useEffect(() => {
+    Promise.all([getUserProfile(), getAllUsers()])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (socket) {
@@ -76,15 +75,10 @@ export default function ChatArea() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
-  useEffect(() => {
-    getAllUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <main className="w-screen h-screen flex overflow-hidden">
-      <SideBar />
+       <SideBar />
       {chatPreview ? <ChatPreview /> : <ChatSection />}
     </main>
-  );
+  )
 }

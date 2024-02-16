@@ -16,6 +16,7 @@ type Store = {
   createChatGroup: (data: any) => Promise<any>;
   getChatGroupMembers: (room_id: string) => Promise<any>;
   updateChatGroup: (data: any) => Promise<any>;
+  
 };
 
 const useChatGroupStore = create<Store>()((set) => ({
@@ -54,6 +55,7 @@ const useChatGroupStore = create<Store>()((set) => ({
       });
   },
 
+ 
   getChatGroupMembers: async (room_id: string) => {
     set({ loading: true });
     getChatGroupMembersApi(room_id).then((resp) => {

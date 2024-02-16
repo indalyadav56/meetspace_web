@@ -37,7 +37,7 @@ export default function ManageAccount({
 
   const FormSchema = z.object({
     dark_theme: z.boolean(),
-    email: z.string().nullish(),
+    email: z.string(),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -80,17 +80,17 @@ export default function ManageAccount({
     setSelectedFile(file);
   };
 
-  useEffect(() => {
-    if (currentUser) {
-      form.setValue("email", currentUser.email);
-      if (currentUser.theme == "light") {
-        form.setValue("dark_theme", false);
-      } else {
-        form.setValue("dark_theme", true);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser]);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     form.setValue("email", currentUser.email);
+  //     if (currentUser.theme == "light") {
+  //       form.setValue("dark_theme", false);
+  //     } else {
+  //       form.setValue("dark_theme", true);
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [currentUser]);
 
   return (
     <div>
@@ -136,18 +136,42 @@ export default function ManageAccount({
                         </FormItem>
                       )}
                     />
-                    {/* <FormField
+                    <FormField
                       control={form.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input placeholder="Email" {...field} />
                           </FormControl>
                         </FormItem>
                       )}
-                    /> */}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Email" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Email" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
                 <Button className="w-full h-12" type="submit">

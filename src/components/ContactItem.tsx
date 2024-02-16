@@ -67,7 +67,7 @@ const ChatContactCard: React.FC<any> = (props) => {
                   : data.first_name + " " + data.last_name}
               </p>
               {data.last_message ? (
-                <p className="text-sm mt-2 text-muted-foreground dark:text-white">
+                <p className="text-sm mt-2 text-muted-foreground dark:text-white ">
                   {data.last_message}
                 </p>
               ) : (
