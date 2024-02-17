@@ -1,41 +1,39 @@
-'use client'
+"use client";
 
-import React, { useEffect } from 'react'
+import React, { useEffect } from "react";
 
-import ChatPreview from '@/components/ChatPreview'
-import ChatSection from '@/components/ChatSection'
-import SideBar from '@/components/SideBar'
-import useChatRoomStore from '@/store/chatRoomStore'
-import useUserStore from '@/store/userStore'
-import { useSocket } from '@/context/Socket'
+import ChatPreview from "@/components/ChatPreview";
+import ChatSection from "@/components/ChatSection";
+import SideBar from "@/components/SideBar";
+import useChatRoomStore from "@/store/chatRoomStore";
+import useUserStore from "@/store/userStore";
+import { useSocket } from "@/context/Socket";
 import constants from "@/constants";
-import { ChatContact } from '@/types/chat_room'
+import { ChatContact } from "@/types/chat_room";
+import { getUserIdFromToken } from "@/lib/jwt";
 
 export default function Root() {
   const { chatPreview } = useChatRoomStore();
+  const { updateContactByRoomId } = useChatRoomStore();
   const { getUserProfile, getAllUsers } = useUserStore();
   const socket = useSocket();
-
+  const currentUserId = getUserIdFromToken();
 
   async function showNotification(title: string, message: string) {
     if (!("Notification" in window)) {
       console.error("This browser does not support desktop notification");
       return;
     }
-
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     } else {
-      new Notification(title, {
+      const notification = new Notification(title, {
         body: message + JSON.stringify(navigator.userAgent),
       });
+      setTimeout(() => {
+        notification.close();
+      }, 3000);
     }
-    socket?.send(
-      JSON.stringify({
-        event: constants.event.CHAT_NOTIFICATION_RECEIVED,
-        data: "receiverUser",
-      })
-    );
   }
 
   const handleGlobalEvent = (data: string) => {
@@ -43,7 +41,7 @@ export default function Root() {
     console.log("globalSocket:->", message);
     if (
       message.event === constants.event.CHAT_NOTIFICATION_SENT &&
-      message.data.receiver_user.id === 'currentUserId'
+      message?.data?.receiver_user?.id === currentUserId
     ) {
       showNotification("New Message", message.data.content);
       const contactData: ChatContact = {
@@ -56,13 +54,12 @@ export default function Root() {
         last_message: message.data.content,
         updated_at: message.data.updated_at,
       };
-      // updateChatRoomContact(contactData);
+      updateContactByRoomId(contactData);
     }
   };
 
-
   useEffect(() => {
-    Promise.all([getUserProfile(), getAllUsers()])
+    Promise.all([getUserProfile(), getAllUsers()]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -77,8 +74,8 @@ export default function Root() {
 
   return (
     <main className="w-screen h-screen flex overflow-hidden">
-       <SideBar />
+      <SideBar />
       {chatPreview ? <ChatPreview /> : <ChatSection />}
     </main>
-  )
+  );
 }

@@ -4,7 +4,7 @@ import useChatMessageStore from "@/store/chatMessageStore";
 import ChatContactItem from "./ContactItem";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { ChatContact } from "@/types/chat_room";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ChatContactListProps {
   data: ChatContact[];
@@ -13,23 +13,21 @@ interface ChatContactListProps {
 
 const ChatContactList: React.FC<ChatContactListProps> = (props) => {
   const { data, setIsFocused } = props;
+  const [currentRoomId, setCurrentRoomId] = useState("");
 
   const { getChatMessageByRoomId } = useChatMessageStore();
-  const { getSingleContactData, singleRoomData } = useChatRoomStore();
+  const { getSingleContactData, updateContactByRoomId } = useChatRoomStore();
 
   const onItemClick = (contact: ChatContact) => {
+    setCurrentRoomId(contact.room_id);
+    contact["message_unseen_count"] = 0;
+    updateContactByRoomId(contact, false);
+    getChatMessageByRoomId(contact.room_id);
     getSingleContactData(contact);
 
     useChatMessageStore.setState({ chatMessageData: [] });
     if (setIsFocused) setIsFocused(false);
   };
-
-  useEffect(() => {
-    if (singleRoomData?.id) {
-      getChatMessageByRoomId(singleRoomData.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleRoomData]);
 
   return (
     <div className="h-[calc(100%-48px)] overflow-y-auto">
@@ -38,6 +36,7 @@ const ChatContactList: React.FC<ChatContactListProps> = (props) => {
           key={item.room_id}
           data={item}
           onUserClick={() => onItemClick(item)}
+          active={currentRoomId === item.room_id}
         />
       ))}
     </div>

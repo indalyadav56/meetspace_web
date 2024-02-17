@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
-import { addChatMessageApi, getChatMessageByRoomIdApi } from "@/api/chatMessageApi";
+import {
+  addChatMessageApi,
+  getChatMessageByRoomIdApi,
+} from "@/api/chatMessageApi";
 
 type Store = {
   chatMessageData: any;
@@ -53,14 +56,16 @@ const useChatMessageStore = create<Store>()((set) => ({
     });
   },
 
-  addChatRoomMessage: async (data:any)=>{
-    set({loading: true, success: false, error: false})
-    
-    addChatMessageApi(data).then((result) => {
-      set({loading: false, success: true, error: false})
-    }).catch((err) => {
-      set({loading: false, success: false, error: true})
-    });
+  addChatRoomMessage: async (data: any) => {
+    set({ loading: true, success: false, error: false });
+
+    addChatMessageApi(data)
+      .then((result) => {
+        set({ loading: false, success: true, error: false });
+      })
+      .catch((err) => {
+        set({ loading: false, success: false, error: true });
+      });
   },
 
   getChatMessageByRoomId: async (roomId: string) => {
@@ -76,7 +81,6 @@ const useChatMessageStore = create<Store>()((set) => ({
   removeCurrentMsgDataState: async () => {
     set({ chatMessageData: [] });
   },
-  
 }));
 
 export default useChatMessageStore;
