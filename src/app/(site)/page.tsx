@@ -37,24 +37,29 @@ export default function Root() {
   }
 
   const handleGlobalEvent = (data: string) => {
-    const message = JSON.parse(data);
-    console.log("globalSocket:->", message);
-    if (
-      message.event === constants.event.CHAT_NOTIFICATION_SENT &&
-      message?.data?.receiver_user?.id === currentUserId
-    ) {
-      showNotification("New Message", message.data.content);
-      const contactData: ChatContact = {
-        room_id: message.data.room_id,
-        user_id: message.data.sender_user.id,
-        first_name: message.data.sender_user.first_name,
-        last_name: message.data.sender_user.last_name,
-        email: message.data.sender_user.email,
-        message_unseen_count: 1,
-        last_message: message.data.content,
-        updated_at: message.data.updated_at,
-      };
-      updateContactByRoomId(contactData);
+    try {
+      const message = JSON.parse(data);
+      if (
+        message.event === constants.event.CHAT_NOTIFICATION_SENT &&
+        message?.data?.receiver_user?.id === currentUserId
+      ) {
+        showNotification("New Message", message.data.content);
+        const contactData: ChatContact = {
+          room_id: message.data.room_id,
+          user_id: message.data.sender_user.id,
+          first_name: message.data.sender_user.first_name,
+          last_name: message.data.sender_user.last_name,
+          email: message.data.sender_user.email,
+          message_unseen_count: 1,
+          last_message: message.data.content,
+          updated_at: new Date().toUTCString(),
+          is_group: message.data.content,
+          room_name: message.data.room_name,
+        };
+        updateContactByRoomId(contactData);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -66,6 +71,7 @@ export default function Root() {
   useEffect(() => {
     if (socket) {
       socket.onmessage = (event) => {
+        console.log("globalSocket:->", event.data);
         handleGlobalEvent(event.data);
       };
     }

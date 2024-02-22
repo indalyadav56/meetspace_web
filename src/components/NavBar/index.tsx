@@ -54,7 +54,7 @@ const NavBar = () => {
 
   useEffect(() => {
     if (success && actionType === "logout") {
-      window.location.reload()
+      window.location.reload();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);

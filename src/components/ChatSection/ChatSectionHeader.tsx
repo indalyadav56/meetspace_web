@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MoreVertical, Phone, UserPlus, Video } from "lucide-react";
-import Select from "react-select";
-import { useTheme } from "next-themes";
+import { MoreVertical, Phone, UserPlus, Video, X } from "lucide-react";
 
 import UserAvatar from "../UserAvatar";
 import DialogBox from "../DialogBox";
@@ -29,6 +27,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { FormLabel } from "../ui/form";
+import { Command, CommandInput, CommandItem, CommandList } from "../ui/command";
+import UserItem from "../UserItem";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
@@ -40,37 +41,19 @@ const ChatSectionHeader = () => {
     useChatRoomStore();
   const { getChatGroupMembers, chatGroupMembers, updateChatGroup } =
     useChatGroupStore();
-  const { users } = useUserStore();
+  const { users, removeUsersState, addUsersState } = useUserStore();
 
-  const { theme } = useTheme();
+  function onUserClick(user: any) {
+    setSelectedUsers((prev: any) => [...prev, user]);
+    removeUsersState(user.id);
+  }
 
-  const customStyles = {
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: theme === "dark" ? "black" : "#fff",
-    }),
-
-    control: (baseStyles: any, state: any) => ({
-      ...baseStyles,
-      borderColor: "#000064",
-      outline: state.isFocus ? "1px solid #000064" : null,
-      backgroundColor: "dark",
-      borderRadius: 4,
-      minHeight: 40,
-    }),
-
-    singleValue: (provided: any, state: any) => {
-      const opacity = state.isDisabled ? 0.5 : 1;
-      const transition = "opacity 300ms";
-
-      return { ...provided, opacity, transition };
-    },
-  };
-
-  const onChange = (selectedOpts: any) => {
-    const userIds = selectedOpts.map((opt: any) => opt.id);
-    setSelectedUsers(userIds);
-  };
+  function handleSelectedRemoveUser(user: any) {
+    setSelectedUsers((prevUsers) =>
+      prevUsers.filter((item: any) => item.id !== user.id)
+    );
+    addUsersState(user);
+  }
 
   return (
     <main>
@@ -172,16 +155,43 @@ const ChatSectionHeader = () => {
           handleClose={() => setAddGroupUser(false)}
           mainContent={
             <main>
-              <Select
-                options={users}
-                closeMenuOnSelect={false}
-                styles={customStyles}
-                getOptionValue={(option: any) => option.id}
-                getOptionLabel={(option) => option.email}
-                isMulti
-                isSearchable={true}
-                onChange={onChange}
-              />
+              {/* show users */}
+              {selectedUsers.length > 0 && (
+                <div className="flex flex-wrap max-h-44  gap-2 overflow-hidden overflow-y-auto items-center ">
+                  {selectedUsers.map((user: any) => (
+                    <div
+                      className="bg-slate-400 flex items-center p-2 rounded-md"
+                      key={user.email}
+                    >
+                      <span className="mr-2 font-semibold">{user.email}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="bg-transparent"
+                        onClick={() => handleSelectedRemoveUser(user)}
+                      >
+                        <X />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <Command className="border-1">
+                <span className="mt-2">Add User</span>
+                <CommandInput placeholder="Type a command or search..." />
+                <CommandList>
+                  {users.map((user: any) => (
+                    <CommandItem key={user.id} value={user}>
+                      <UserItem
+                        key={user.id}
+                        data={user}
+                        onUserClick={() => onUserClick(user)}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandList>
+              </Command>
             </main>
           }
           footerContent={

@@ -1,5 +1,10 @@
-import React from "react";
+"use client";
 
-export default function page() {
-  return <div>page</div>;
-}
+import React, { useState } from "react";
+
+const Home = () => {
+  const [tags, setTags] = useState<string[]>([]);
+
+  return <div></div>;
+};
+export default Home;

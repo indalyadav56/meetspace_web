@@ -6,6 +6,7 @@ import {
   getUserProfileApi,
   updateUserApi,
 } from "../api/userApi";
+import { Users } from "lucide-react";
 
 type User = {
   id: string;
@@ -29,6 +30,8 @@ type Store = {
   getUserProfile: () => Promise<any>;
   updateUser: (updateData: any) => Promise<any>;
   getSingleUser: (user_id: string) => Promise<any>;
+  addUsersState: (user: any) => Promise<any>;
+  removeUsersState: (user_id: string) => Promise<any>;
 };
 
 const useUserStore = create<Store>()((set) => ({
@@ -89,6 +92,26 @@ const useUserStore = create<Store>()((set) => ({
           loading: false,
         });
       });
+  },
+
+  addUsersState: async (user: any) => {
+    set((state) => ({
+      users: [...state.users, user],
+    }));
+  },
+
+  removeUsersState: async (user_id: string) => {
+    set((state) => {
+      if (state.users) {
+        let users = state.users.filter((item: any) => item.id !== user_id);
+        return {
+          users: users,
+        };
+      }
+      return {
+        users: [],
+      };
+    });
   },
 }));
 

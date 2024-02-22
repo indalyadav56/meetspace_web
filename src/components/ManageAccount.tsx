@@ -36,32 +36,25 @@ export default function ManageAccount({
   const { setTheme } = useTheme();
 
   const FormSchema = z.object({
-    dark_theme: z.boolean(),
-    email: z.string(),
+    theme: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+    email: z.optional(z.string()),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      dark_theme: false,
+      theme: "",
+      first_name: "",
+      last_name: "",
       email: "",
     },
+    values: currentUser,
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-    let theme_value = "light";
-    if (data.dark_theme) {
-      theme_value = "dark";
-    }
-    setTheme(theme_value);
+    console.log("indal", data);
   }
 
   const handleFileInputChange = (e: any) => {
@@ -79,18 +72,6 @@ export default function ManageAccount({
     }
     setSelectedFile(file);
   };
-
-  // useEffect(() => {
-  //   if (currentUser) {
-  //     form.setValue("email", currentUser.email);
-  //     if (currentUser.theme == "light") {
-  //       form.setValue("dark_theme", false);
-  //     } else {
-  //       form.setValue("dark_theme", true);
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [currentUser]);
 
   return (
     <div>
@@ -123,13 +104,13 @@ export default function ManageAccount({
                   <div className="space-y-4">
                     <FormField
                       control={form.control}
-                      name="dark_theme"
+                      name="theme"
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2 shadow-sm">
                           <p className="text-sm">Dark Theme</p>
                           <FormControl>
                             <Switch
-                              checked={field.value}
+                              checked={field.value ? true : false}
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
@@ -138,12 +119,24 @@ export default function ManageAccount({
                     />
                     <FormField
                       control={form.control}
-                      name="email"
+                      name="first_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>First Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Email" {...field} />
+                            <Input placeholder="First name" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="last_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Last name" {...field} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -151,18 +144,7 @@ export default function ManageAccount({
                     <FormField
                       control={form.control}
                       name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Email" {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
+                      disabled
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Email</FormLabel>
@@ -175,7 +157,7 @@ export default function ManageAccount({
                   </div>
                 </div>
                 <Button className="w-full h-12" type="submit">
-                  Submit
+                  Update
                 </Button>
               </form>
             </Form>

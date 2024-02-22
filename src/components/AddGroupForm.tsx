@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Select from "react-select";
 import ClipLoader from "react-spinners/ClipLoader";
 
 import { Button } from "./ui/button";
@@ -18,15 +17,25 @@ import {
 } from "@/components/ui/form";
 import useChatGroupStore from "@/store/chatGroupStore";
 import useUserStore from "@/store/userStore";
-import UserAvatar from "./UserAvatar";
 import { useTheme } from "next-themes";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import UserItem from "./UserItem";
+import { X } from "lucide-react";
 
 const AddGroupForm = () => {
   const { theme } = useTheme();
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [onFocus, setOnFocus] = useState(false);
 
   const { createChatGroup, loading } = useChatGroupStore();
-  const { users } = useUserStore();
+  const { users, removeUsersState, addUsersState } = useUserStore();
 
   const formSchema = z.object({
     title: z.string().min(2, {
@@ -42,50 +51,22 @@ const AddGroupForm = () => {
   });
 
   function onSubmit(values: any) {
-    values["user_ids"] = selectedUsers;
+    const userIds = selectedUsers.map((item: any) => item.id);
+    values["user_ids"] = userIds;
     createChatGroup(values);
   }
 
-  const onChange = (selectedOpts: any) => {
-    const userIds = selectedOpts.map((opt: any) => opt.id);
-    setSelectedUsers(userIds);
-  };
+  function onUserClick(user: any) {
+    setSelectedUsers((prev: any) => [...prev, user]);
+    removeUsersState(user.id);
+  }
 
-  const formatUserLabel = ({ first_name, last_name, email }: any) => (
-    <div className="flex h-16 gap-2 w-full text-red-500 text-sm">
-      <UserAvatar size="sm" />
-      <div className="flex flex-col">
-        <span>
-          {first_name + " "}
-          {last_name}
-        </span>
-        <span>{email}</span>
-      </div>
-    </div>
-  );
-
-  const customStyles = {
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: theme === "dark" ? "black" : "#fff",
-    }),
-
-    control: (baseStyles: any, state: any) => ({
-      ...baseStyles,
-      borderColor: "#000064",
-      outline: state.isFocus ? "1px solid #000064" : null,
-      backgroundColor: "dark",
-      borderRadius: 4,
-      minHeight: 40,
-    }),
-
-    singleValue: (provided: any, state: any) => {
-      const opacity = state.isDisabled ? 0.5 : 1;
-      const transition = "opacity 300ms";
-
-      return { ...provided, opacity, transition };
-    },
-  };
+  function handleSelectedRemoveUser(user: any) {
+    setSelectedUsers((prevUsers) =>
+      prevUsers.filter((item: any) => item.id !== user.id)
+    );
+    addUsersState(user);
+  }
 
   return (
     <main>
@@ -107,19 +88,51 @@ const AddGroupForm = () => {
               </FormItem>
             )}
           />
+          {/* show users */}
+          {selectedUsers.length > 0 && (
+            <div className="flex flex-wrap max-h-44  gap-2 overflow-hidden overflow-y-auto items-center ">
+              {selectedUsers.map((user: any) => (
+                <div
+                  className="bg-slate-400 flex items-center p-2 rounded-md"
+                  key={user.email}
+                >
+                  <span className="mr-2 font-semibold">{user.email}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="bg-transparent"
+                    onClick={() => handleSelectedRemoveUser(user)}
+                  >
+                    <X />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div>
             <FormLabel>Users</FormLabel>
-            <Select
-              options={users}
-              closeMenuOnSelect={false}
-              onChange={onChange}
-              styles={customStyles}
-              getOptionValue={(option: any) => option.id}
-              getOptionLabel={(option) => option.email}
-              formatOptionLabel={formatUserLabel}
-              isMulti
-            />
+            <Command className="border-1">
+              <CommandInput
+                placeholder="Type a command or search..."
+                onFocus={(e) => {
+                  setOnFocus(true);
+                }}
+              />
+              {onFocus && (
+                <CommandList>
+                  {users.map((user: any) => (
+                    <CommandItem key={user.id} value={user}>
+                      <UserItem
+                        key={user.id}
+                        data={user}
+                        onUserClick={() => onUserClick(user)}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandList>
+              )}
+            </Command>
           </div>
 
           {!loading && (
