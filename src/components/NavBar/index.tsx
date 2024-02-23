@@ -79,7 +79,7 @@ const NavBar = () => {
       <header className="flex justify-between p-2">
         <UserAvatar
           size="md"
-          isOnline={true}
+          isOnline={currentUser.is_active}
           onClick={() => setAccountDialog(true)}
         />
         <DropdownMenu>

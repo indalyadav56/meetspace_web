@@ -13,9 +13,14 @@ import { ChatContact } from "@/types/chat_room";
 import { getUserIdFromToken } from "@/lib/jwt";
 
 export default function Root() {
-  const { chatPreview } = useChatRoomStore();
+  const { chatPreview, updateContactUserPresence } = useChatRoomStore();
   const { updateContactByRoomId } = useChatRoomStore();
-  const { getUserProfile, getAllUsers } = useUserStore();
+  const {
+    getUserProfile,
+    getAllUsers,
+    updateCurrentUserProfile,
+    updateUserPresence,
+  } = useUserStore();
   const socket = useSocket();
   const currentUserId = getUserIdFromToken();
 
@@ -57,6 +62,16 @@ export default function Root() {
           room_name: message.data.room_name,
         };
         updateContactByRoomId(contactData);
+      }
+      if (message.event === constants.event.USER_CONNECTED) {
+        updateCurrentUserProfile({ is_active: true });
+        updateUserPresence(message.data, { is_active: true });
+        updateContactUserPresence(message.data.id, { is_active: true });
+      }
+      if (message.event === constants.event.USER_DISCONNECTED) {
+        updateCurrentUserProfile({ is_active: false });
+        updateUserPresence(message.data.id, { is_active: false });
+        updateContactUserPresence(message.data.id, { is_active: false });
       }
     } catch (err) {
       console.log(err);

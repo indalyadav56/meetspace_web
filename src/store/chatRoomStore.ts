@@ -27,6 +27,7 @@ type Store = {
   setChatPreview: (flag: boolean) => void;
   deleteChatGroup: (roomID: string) => Promise<any>;
   deleteContactByRoomId: (roomID: string) => Promise<any>;
+  updateContactUserPresence: (user_id: string, update_data: Object) => void;
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
@@ -235,6 +236,17 @@ const useChatRoomStore = create<Store>()((set) => ({
 
   setChatPreview: (flag) => {
     set({ chatPreview: flag });
+  },
+
+  updateContactUserPresence: (user_id, update_data) => {
+    set((state) => ({
+      chatRoomContact: state.chatRoomContact.map((item) => {
+        if (item.user_id === user_id) {
+          return { ...item, ...update_data };
+        }
+        return item;
+      }),
+    }));
   },
 }));
 

@@ -28,10 +28,10 @@ import {
 } from "@/components/ui/command";
 import UserItem from "./UserItem";
 import { X } from "lucide-react";
+import { User } from "@/utils/types";
 
 const AddGroupForm = () => {
-  const { theme } = useTheme();
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [onFocus, setOnFocus] = useState(false);
 
   const { createChatGroup, loading } = useChatGroupStore();
@@ -57,7 +57,7 @@ const AddGroupForm = () => {
   }
 
   function onUserClick(user: any) {
-    setSelectedUsers((prev: any) => [...prev, user]);
+    setSelectedUsers((prev) => [...prev, user]);
     removeUsersState(user.id);
   }
 

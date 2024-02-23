@@ -32,6 +32,8 @@ type Store = {
   getSingleUser: (user_id: string) => Promise<any>;
   addUsersState: (user: any) => Promise<any>;
   removeUsersState: (user_id: string) => Promise<any>;
+  updateUserPresence: (user_id: string, update_data: Object) => void;
+  updateCurrentUserProfile: (data: Object) => void;
 };
 
 const useUserStore = create<Store>()((set) => ({
@@ -112,6 +114,23 @@ const useUserStore = create<Store>()((set) => ({
         users: [],
       };
     });
+  },
+
+  updateUserPresence: (user_id, update_data) => {
+    set((state) => ({
+      users: state.users.map((item: any) => {
+        if (item.id === user_id) {
+          return { ...item, ...update_data };
+        }
+        return item;
+      }),
+    }));
+  },
+
+  updateCurrentUserProfile: (data) => {
+    set((state) => ({
+      currentUser: { ...state.currentUser, ...data },
+    }));
   },
 }));
 

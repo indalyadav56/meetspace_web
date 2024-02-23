@@ -27,14 +27,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
-import { FormLabel } from "../ui/form";
 import { Command, CommandInput, CommandItem, CommandList } from "../ui/command";
 import UserItem from "../UserItem";
+import { User } from "@/utils/types";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
   const [addGroupUser, setAddGroupUser] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
 
   const { singleRoomData, deleteChatGroup, deleteContactByRoomId } =
