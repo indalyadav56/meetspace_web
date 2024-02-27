@@ -4,6 +4,7 @@ import useChatMessageStore from "@/store/chatMessageStore";
 import ChatContactItem from "./ContactItem";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { ChatContact } from "@/types/chat_room";
+import { useEffect, useState } from "react";
 
 interface ChatContactListProps {
   data: ChatContact[];
@@ -12,13 +13,24 @@ interface ChatContactListProps {
 
 const ChatContactList: React.FC<ChatContactListProps> = (props) => {
   const { data, setIsFocused } = props;
+  const [currentRoomId, setCurrentRoomId] = useState("");
 
-  const { getSingleContactData } = useChatRoomStore();
+  const { getChatMessageByRoomId } = useChatMessageStore();
+  const { getSingleContactData, updateContactByRoomId } = useChatRoomStore();
 
   const onItemClick = (contact: ChatContact) => {
+    setCurrentRoomId(contact.room_id);
+    contact["message_unseen_count"] = 0;
+    updateContactByRoomId(contact, false);
+    getChatMessageByRoomId(contact.room_id);
     getSingleContactData(contact);
+
     useChatMessageStore.setState({ chatMessageData: [] });
     if (setIsFocused) setIsFocused(false);
+  };
+
+  const sortMsg = (a: any, b: any) => {
+    return new Date(a.updated_at) - new Date(b.updated_at);
   };
 
   return (
@@ -28,6 +40,7 @@ const ChatContactList: React.FC<ChatContactListProps> = (props) => {
           key={item.room_id}
           data={item}
           onUserClick={() => onItemClick(item)}
+          active={currentRoomId === item.room_id}
         />
       ))}
     </div>

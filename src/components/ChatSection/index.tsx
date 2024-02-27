@@ -14,9 +14,8 @@ import { ChatContact } from "@/types/chat_room";
 const ChatSection = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  const { getChatMessageByRoomId } = useChatMessageStore();
-  const { addChatMessage } = useChatMessageStore();
-  const { updateChatRoomContact, singleRoomData } = useChatRoomStore();
+  const { addChatMessage, addChatRoomMessage } = useChatMessageStore();
+  const { singleRoomData, updateContactByRoomId } = useChatRoomStore();
 
   const token = CookieService.getCookie(constants.token.ACCESS_TOKEN);
 
@@ -27,6 +26,10 @@ const ChatSection = () => {
       const message = JSON.parse(data);
       if (message.event === constants.event.CHAT_MESSAGE_SENT) {
         addChatMessage(message.data);
+        let msgData: any = {
+          room_id: message.data.room_id,
+          content: message.data.content,
+        };
         let contactData: ChatContact = {
           room_id: message.data.room_id,
           room_name: message.data.room_name,
@@ -34,14 +37,15 @@ const ChatSection = () => {
           updated_at: message.data.updated_at,
         };
         if (!message.data.is_group) {
+          msgData["receiver_user_id"] = message.data.receiver_user.id;
+
           contactData["user_id"] = message.data.receiver_user.id;
           contactData["first_name"] = message.data.receiver_user.first_name;
           contactData["last_name"] = message.data.receiver_user.last_name;
           contactData["email"] = message.data.receiver_user.email;
-          updateChatRoomContact(contactData);
-        } else {
-          updateChatRoomContact(contactData);
         }
+        addChatRoomMessage(msgData);
+        updateContactByRoomId(contactData);
       }
     } catch (err) {
       console.log(err);
@@ -52,27 +56,27 @@ const ChatSection = () => {
     const newSocket = new WebSocket(url);
     setSocket(newSocket);
 
-    // newSocket.onopen = (event) => {
-    // console.log("connection open", event);
-    // };
+    newSocket.onopen = (event) => {
+      console.log("connection open", event);
+    };
 
-    // newSocket.onerror = (event) => {
-    // console.log("connection err:=>", event);
-    // };
+    newSocket.onerror = (event) => {
+      console.log("connection err:=>", event);
+    };
 
     newSocket.onmessage = (event) => {
-      console.log("on chat-messagge=>", event.data);
+      console.log("on chat-messagge===>", event.data);
       handlEvent(event.data);
     };
 
-    return () => newSocket.close();
+    return () => {
+      if (newSocket.readyState === WebSocket.OPEN) {
+        console.log("cleanup: closing socket");
+        newSocket.close();
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setSocket, url]);
-
-  useEffect(() => {
-    getChatMessageByRoomId(singleRoomData.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleRoomData]);
+  }, [url]);
 
   return (
     <div className="flex-1 flex flex-col">

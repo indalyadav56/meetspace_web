@@ -43,15 +43,10 @@ const NavBar = () => {
   const [logoutDialog, setLogoutDialog] = useState<boolean>(false);
 
   const router = useRouter();
-  const { getUserProfile, currentUser } = useUserStore();
+  const { currentUser } = useUserStore();
   const { logoutUser, loading, success, actionType } = useAuthStore();
   const { success: chatGroupSuccess, chatGroupData } = useChatGroupStore();
   const { updateContactByRoomId } = useChatRoomStore();
-
-  useEffect(() => {
-    getUserProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleLogout = () => {
     logoutUser();
@@ -59,7 +54,7 @@ const NavBar = () => {
 
   useEffect(() => {
     if (success && actionType === "logout") {
-      router.push("/login");
+      window.location.reload();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
@@ -68,12 +63,12 @@ const NavBar = () => {
     if (chatGroupSuccess) {
       const groupData: ChatContact = {
         room_id: chatGroupData["id"],
-        is_group: true,
         room_name: chatGroupData["room_name"],
+        is_group: true,
         updated_at: new Date().toUTCString(),
       };
-      updateContactByRoomId(groupData);
       setGroupDialog(false);
+      updateContactByRoomId(groupData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatGroupSuccess]);
@@ -84,7 +79,7 @@ const NavBar = () => {
       <header className="flex justify-between p-2">
         <UserAvatar
           size="md"
-          isOnline={true}
+          isOnline={currentUser.is_active}
           onClick={() => setAccountDialog(true)}
         />
         <DropdownMenu>

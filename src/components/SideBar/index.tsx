@@ -15,7 +15,7 @@ const SideBar = () => {
   }, []);
 
   return (
-    <div className="w-96 flex flex-col border-r-2">
+    <div className="hidden w-96 md:flex flex-col border-r-2">
       <SideBarHeader />
       <SideBarContent />
     </div>

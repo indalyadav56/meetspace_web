@@ -18,8 +18,6 @@ export const getChatMessageByRoomIdApi = async (
   return api.get(`/v1/chat/messages/${chatRoomId}`);
 };
 
-export const createChatMessage = async (
-  data: CreateMessageData
-): Promise<AxiosResponse<Message>> => {
+export const addChatMessageApi = async (data: CreateMessageData)=> {
   return api.post("/v1/chat/messages", data);
 };

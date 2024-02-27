@@ -40,3 +40,7 @@ export const getChatRoomContact = async (): Promise<AxiosResponse<any>> => {
   const response = await api.get(`/v1/chat/contact`);
   return response.data;
 };
+
+export const deleteChatRoomApi = async (roomId: string) => {
+  return api.delete(`/v1/chat/rooms/${roomId}`);
+};
