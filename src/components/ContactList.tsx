@@ -29,6 +29,10 @@ const ChatContactList: React.FC<ChatContactListProps> = (props) => {
     if (setIsFocused) setIsFocused(false);
   };
 
+  const sortMsg = (a: any, b: any) => {
+    return new Date(a.updated_at) - new Date(b.updated_at);
+  };
+
   return (
     <div className="h-[calc(100%-48px)] overflow-y-auto">
       {data?.map((item: ChatContact) => (

@@ -11,6 +11,7 @@ import { useSocket } from "@/context/Socket";
 import constants from "@/constants";
 import { ChatContact } from "@/types/chat_room";
 import { getUserIdFromToken } from "@/lib/jwt";
+import CallReceiver from "@/components/CallReceiver";
 
 export default function Root() {
   const { chatPreview, updateContactUserPresence } = useChatRoomStore();
@@ -94,9 +95,13 @@ export default function Root() {
   }, [socket]);
 
   return (
-    <main className="w-screen h-screen flex overflow-hidden">
-      <SideBar />
-      {chatPreview ? <ChatPreview /> : <ChatSection />}
-    </main>
+    <>
+      <main className="w-screen h-screen flex overflow-hidden">
+        <SideBar />
+        {chatPreview ? <ChatPreview /> : <ChatSection />}
+      </main>
+
+      <CallReceiver />
+    </>
   );
 }

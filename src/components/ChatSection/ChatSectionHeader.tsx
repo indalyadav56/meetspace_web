@@ -30,6 +30,7 @@ import {
 import { Command, CommandInput, CommandItem, CommandList } from "../ui/command";
 import UserItem from "../UserItem";
 import { User } from "@/utils/types";
+import Link from "next/link";
 
 const ChatSectionHeader = () => {
   const [open, setOpen] = useState(false);
@@ -83,12 +84,16 @@ const ChatSectionHeader = () => {
           )}
         </div>
         <div className="flex items-center gap-2 text-sm">
-          {/* <Button variant="ghost" size="icon">
-            <Video />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <Phone />
-          </Button> */}
+          <Link href="/lobby">
+            <Button variant="ghost" size="icon">
+              <Video />
+            </Button>
+          </Link>
+          <Link href="/lobby">
+            <Button variant="ghost" size="icon">
+              <Phone />
+            </Button>
+          </Link>
           {singleRoomData?.is_group ? (
             <Button
               variant="ghost"

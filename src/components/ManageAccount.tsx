@@ -13,13 +13,13 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import UserAvatar from "./UserAvatar";
 import useUserStore from "@/store/userStore";
 import { Input } from "./ui/input";
-import { Card, CardFooter } from "./ui/card";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Label } from "./ui/label";
+
+import GeneralSettings from "./GeneralSettings";
 
 export default function ManageAccount({
   open,
@@ -33,7 +33,7 @@ export default function ManageAccount({
   const [currentTab, setCurrentTab] = useState("Account");
 
   const fileRef = useRef<HTMLInputElement>(null);
-  const { currentUser } = useUserStore();
+  const { currentUser, updateUser } = useUserStore();
   const { setTheme } = useTheme();
 
   const themes = ["light", "dark", "system"];
@@ -72,7 +72,15 @@ export default function ManageAccount({
   const menus = [{ lable: "General" }, { lable: "Account" }];
 
   const handleThemeChange = (event: any) => {
-    setSelectedTheme(event.target.value);
+    console.log("setTheme", event.target);
+    // setTheme(theme)
+  };
+
+  const handleThemeUpdate = () => {
+    setTheme("light");
+    // updateUser({
+    //   theme: "light",
+    // });
   };
 
   const MenuClickHandler = (data: string) => {
@@ -104,40 +112,7 @@ export default function ManageAccount({
 
             {/* right section */}
             <div className="flex-1">
-              {currentTab === "General" && (
-                <div>
-                  <RadioGroup defaultValue={currentUser.theme}>
-                    <div className="flex  gap-2 ">
-                      {themes.map((item, index) => (
-                        <Card
-                          key={index}
-                          className="border-gray-200 bottom-4 rounded-md"
-                        >
-                          <img
-                            className="w-full"
-                            src="https://cdn.dribbble.com/userupload/7774376/file/original-990d1df4647780951ddbaecf123f2d4d.png"
-                            alt={item}
-                          />
-                          <CardFooter className="p-2 justify-between">
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem
-                                value={item}
-                                id={item}
-                                onChange={handleThemeChange}
-                              />
-                              <Label htmlFor={item}>{item}</Label>
-                            </div>
-                          </CardFooter>
-                        </Card>
-                      ))}
-                    </div>
-                  </RadioGroup>
-
-                  <Button className="w-full h-12 my-4" type="submit">
-                    Update
-                  </Button>
-                </div>
-              )}
+              {currentTab === "General" && <GeneralSettings />}
               {currentTab === "Account" && (
                 <div>
                   <div className="flex items-center my-4">
