@@ -16,6 +16,7 @@ type Store = {
   createChatGroup: (data: any) => Promise<any>;
   getChatGroupMembers: (room_id: string) => Promise<any>;
   updateChatGroup: (data: any) => Promise<any>;
+  
 };
 
 const useChatGroupStore = create<Store>()((set) => ({
@@ -31,11 +32,12 @@ const useChatGroupStore = create<Store>()((set) => ({
       .then((resp: any) => {
         set((state) => ({
           loading: false,
+          success: true,
           chatGroupData: resp.data.data,
         }));
       })
       .catch((error) => {
-        set({ loading: false });
+        set({ loading: false, success: false });
       });
   },
 
@@ -53,6 +55,7 @@ const useChatGroupStore = create<Store>()((set) => ({
       });
   },
 
+ 
   getChatGroupMembers: async (room_id: string) => {
     set({ loading: true });
     getChatGroupMembersApi(room_id).then((resp) => {

@@ -4,6 +4,7 @@ import {
   getChatRoomContact,
   getChatRoomByUserIdApi,
   getSingleChatRoomApi,
+  deleteChatRoomApi,
 } from "../api/chatRoomApi";
 import { ChatContact } from "@/types/chat_room";
 
@@ -20,10 +21,13 @@ type Store = {
 
   getChatRoomContactData: () => Promise<void>;
   updateChatRoomContact: (item: any) => Promise<any>;
-  updateContactByRoomId: (item: any) => Promise<any>;
+  updateContactByRoomId: (item: any, reOrder?: boolean) => Promise<any>;
   getSingleContactData: (item: any) => Promise<any>;
   getChatRoomByUserId: (user_id: string) => Promise<any>;
   setChatPreview: (flag: boolean) => void;
+  deleteChatGroup: (roomID: string) => Promise<any>;
+  deleteContactByRoomId: (roomID: string) => Promise<any>;
+  updateContactUserPresence: (user_id: string, update_data: Object) => void;
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
@@ -44,26 +48,79 @@ const useChatRoomStore = create<Store>()((set) => ({
     }));
   },
 
-  getSingleContactData: async (room_id: string) => {
-    set({ success: false, loading: true, error: null });
-    getSingleChatRoomApi(room_id)
+  deleteChatGroup: async (roomID: string) => {
+    set({ loading: true, success: false, error: null });
+    deleteChatRoomApi(roomID)
+      .then((resp: any) => {
+        set((state) => ({
+          loading: false,
+          success: true,
+        }));
+      })
+      .catch((error) => {
+        set({ loading: false, success: false, error: [] });
+      });
+  },
+
+  getSingleContactData: async (room_data: ChatContact) => {
+    set({
+      success: false,
+      loading: true,
+      error: null,
+    });
+    getSingleChatRoomApi(room_data.room_id)
       .then((res) => {
         set({
+          success: true,
           singleRoomData: res.data.data,
           chatPreview: false,
         });
       })
       .catch((err) => {
-        set({ loading: false, chatPreview: false, singleRoomData: {} });
+        set({
+          success: false,
+          loading: false,
+          error: [],
+          chatPreview: false,
+          singleRoomData: {
+            id: room_data.room_id,
+            room_name: room_data.room_name,
+            is_group: room_data.is_group,
+            room_users: [
+              {
+                id: room_data.user_id,
+                first_name: room_data.first_name,
+                last_name: room_data.last_name,
+                email: room_data.email,
+              },
+            ],
+          },
+        });
       });
   },
 
   updateChatRoomContact: async (item: ChatContact) => {
-    set({ success: false, loading: true });
+    set({
+      success: false,
+      loading: true,
+    });
     set((state) => {
       if (state.chatRoomContact) {
         if (!item.is_group) {
           return {
+            singleRoomData: {
+              id: item.room_id,
+              room_name: item.room_name,
+              is_group: false,
+              room_users: [
+                {
+                  id: item.user_id,
+                  first_name: item.first_name,
+                  last_name: item.last_name,
+                  email: item.email,
+                },
+              ],
+            },
             chatRoomContact: [
               item,
               ...state.chatRoomContact.filter(
@@ -72,8 +129,46 @@ const useChatRoomStore = create<Store>()((set) => ({
             ],
             chatRoomData: [],
           };
-        } else {
+        }
+      }
+      return {
+        singleRoomData: {
+          id: item.room_id,
+          room_name: item.room_name,
+          is_group: false,
+          room_users: [
+            {
+              id: item.user_id,
+              first_name: item.first_name,
+              last_name: item.last_name,
+              email: item.email,
+            },
+          ],
+        },
+        chatRoomContact: [item],
+        chatRoomData: [],
+      };
+    });
+  },
+
+  updateContactByRoomId: async (item: ChatContact, reOrder = true) => {
+    if (reOrder) {
+      set((state) => {
+        if (state.chatRoomContact) {
           return {
+            singleRoomData: {
+              id: item.room_id,
+              room_name: item.room_name,
+              is_group: item.is_group,
+              room_users: [
+                {
+                  id: item.user_id,
+                  first_name: item.first_name,
+                  last_name: item.last_name,
+                  email: item.email,
+                },
+              ],
+            },
             chatRoomContact: [
               item,
               ...state.chatRoomContact.filter(
@@ -81,31 +176,48 @@ const useChatRoomStore = create<Store>()((set) => ({
               ),
             ],
             chatRoomData: [],
+            chatPreview: false,
           };
         }
-      }
-      return {
-        chatRoomContact: [item],
-        chatRoomData: [],
-      };
-    });
+        return {
+          singleRoomData: {
+            id: item.room_id,
+            room_name: item.room_name,
+            is_group: item.is_group,
+            room_users: [
+              {
+                id: item.user_id,
+                first_name: item.first_name,
+                last_name: item.last_name,
+                email: item.email,
+              },
+            ],
+          },
+          chatRoomContact: [item],
+          chatRoomData: [],
+          chatPreview: false,
+        };
+      });
+    } else {
+      set((state) => {
+        const updatedChatRoomContact = state.chatRoomContact.map((contact) => {
+          return contact.room_id === item.room_id ? item : contact;
+        });
+        return {
+          chatRoomContact: updatedChatRoomContact,
+        };
+      });
+    }
   },
 
-  updateContactByRoomId: async (item: ChatContact) => {
-    set({ success: false, loading: true });
+  deleteContactByRoomId: async (roomId: string) => {
     set((state) => {
-      if (state.chatRoomContact) {
-        return {
-          chatRoomContact: [
-            item,
-            ...state.chatRoomContact.filter((i) => i.room_id !== item.room_id),
-          ],
-          chatRoomData: [],
-        };
-      }
+      const contactData = state.chatRoomContact.filter(
+        (item: ChatContact) => item.room_id !== roomId
+      );
       return {
-        chatRoomContact: [item],
-        chatRoomData: [],
+        chatRoomContact: contactData,
+        chatPreview: true,
       };
     });
   },
@@ -124,6 +236,17 @@ const useChatRoomStore = create<Store>()((set) => ({
 
   setChatPreview: (flag) => {
     set({ chatPreview: flag });
+  },
+
+  updateContactUserPresence: (user_id, update_data) => {
+    set((state) => ({
+      chatRoomContact: state.chatRoomContact.map((item) => {
+        if (item.user_id === user_id) {
+          return { ...item, ...update_data };
+        }
+        return item;
+      }),
+    }));
   },
 }));
 

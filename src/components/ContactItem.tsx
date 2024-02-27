@@ -17,7 +17,7 @@ import {
 } from "./ui/dropdown-menu";
 
 const ChatContactCard: React.FC<any> = (props) => {
-  const { data, onUserClick } = props;
+  const { data, onUserClick, active } = props;
 
   function utcToGeneralTime(
     utcTimeString: string,
@@ -53,7 +53,9 @@ const ChatContactCard: React.FC<any> = (props) => {
 
   return (
     <Card
-      className="h-16 w-full cursor-pointer rounded-none border-none drop-shadow-none shadow-none bg-transparent hover:bg-slate-300 dark:hover:bg-stone-500"
+      className={`h-16 w-full cursor-pointer rounded-none ${
+        active ? "border-l-4" : "border-l-0"
+      } border-r-0 border-b-0 border-t-0 border-red-500 drop-shadow-none shadow-none bg-transparent hover:bg-slate-300 dark:hover:bg-stone-500`}
       onClick={onUserClick}
     >
       <CardContent className="group p-0 h-full w-full">
@@ -67,7 +69,7 @@ const ChatContactCard: React.FC<any> = (props) => {
                   : data.first_name + " " + data.last_name}
               </p>
               {data.last_message ? (
-                <p className="text-sm mt-2 text-muted-foreground dark:text-white">
+                <p className="text-sm mt-2 text-muted-foreground dark:text-white ">
                   {data.last_message}
                 </p>
               ) : (
@@ -86,7 +88,7 @@ const ChatContactCard: React.FC<any> = (props) => {
             )}
           </div>
 
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
@@ -106,7 +108,7 @@ const ChatContactCard: React.FC<any> = (props) => {
                 <DropdownMenuItem>Create Group</DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
       </CardContent>
     </Card>

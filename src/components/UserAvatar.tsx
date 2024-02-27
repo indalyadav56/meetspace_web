@@ -1,6 +1,7 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import UserStatusIndicator from "./UserStatusIndicator";
+import { Button } from "./ui/button";
 
 interface UserAvatarProps {
   onClick?: () => void;

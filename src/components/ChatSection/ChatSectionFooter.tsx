@@ -9,10 +9,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import constants from "../../constants";
-import { getUserIdFromToken } from "../../lib/jwt";
 import useChatRoomStore from "@/store/chatRoomStore";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import useUserStore from "@/store/userStore";
+import { Textarea } from "../ui/textarea";
 
 type ChatSectionFooterProps = {
   socket: WebSocket | null;
@@ -110,6 +110,11 @@ const ChatSectionFooter: React.FC<ChatSectionFooterProps> = ({ socket }) => {
                     className="h-14"
                     {...field}
                   />
+                  {/* <Textarea
+                    placeholder="Tell us a little bit about yourself"
+                    className="resize-none min-h-min max-h-full"
+                    {...field}
+                  /> */}
                 </FormControl>
               </FormItem>
             )}

@@ -6,8 +6,10 @@ import {
   getUserProfileApi,
   updateUserApi,
 } from "../api/userApi";
+import { Users } from "lucide-react";
 
 type User = {
+  id: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -28,6 +30,10 @@ type Store = {
   getUserProfile: () => Promise<any>;
   updateUser: (updateData: any) => Promise<any>;
   getSingleUser: (user_id: string) => Promise<any>;
+  addUsersState: (user: any) => Promise<any>;
+  removeUsersState: (user_id: string) => Promise<any>;
+  updateUserPresence: (user_id: string, update_data: Object) => void;
+  updateCurrentUserProfile: (data: Object) => void;
 };
 
 const useUserStore = create<Store>()((set) => ({
@@ -58,7 +64,7 @@ const useUserStore = create<Store>()((set) => ({
 
   getUserProfile: async () => {
     set({ loading: true, success: false });
-    getUserProfileApi()
+    await getUserProfileApi()
       .then((response) => {
         set({ currentUser: response.data, loading: false, success: true });
       })
@@ -88,6 +94,43 @@ const useUserStore = create<Store>()((set) => ({
           loading: false,
         });
       });
+  },
+
+  addUsersState: async (user: any) => {
+    set((state) => ({
+      users: [...state.users, user],
+    }));
+  },
+
+  removeUsersState: async (user_id: string) => {
+    set((state) => {
+      if (state.users) {
+        let users = state.users.filter((item: any) => item.id !== user_id);
+        return {
+          users: users,
+        };
+      }
+      return {
+        users: [],
+      };
+    });
+  },
+
+  updateUserPresence: (user_id, update_data) => {
+    set((state) => ({
+      users: state.users.map((item: any) => {
+        if (item.id === user_id) {
+          return { ...item, ...update_data };
+        }
+        return item;
+      }),
+    }));
+  },
+
+  updateCurrentUserProfile: (data) => {
+    set((state) => ({
+      currentUser: { ...state.currentUser, ...data },
+    }));
   },
 }));
 
