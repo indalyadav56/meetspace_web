@@ -44,3 +44,7 @@ export const getChatRoomContact = async (): Promise<AxiosResponse<any>> => {
 export const deleteChatRoomApi = async (roomId: string) => {
   return api.delete(`/v1/chat/rooms/${roomId}`);
 };
+
+export const startCallApi = async (data: any) => {
+  return api.post(`/v1/chat/call`, data);
+};
