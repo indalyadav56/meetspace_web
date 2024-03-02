@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import ChatPreview from "@/components/ChatPreview";
 import ChatSection from "@/components/ChatSection";
@@ -14,6 +14,7 @@ import { getUserIdFromToken } from "@/lib/jwt";
 import CallReceiver from "@/components/CallReceiver";
 
 export default function Root() {
+  const [showCallReceiver, setShowCallReceiver] = useState(false);
   const { chatPreview, updateContactUserPresence } = useChatRoomStore();
   const { updateContactByRoomId } = useChatRoomStore();
   const {
@@ -74,6 +75,12 @@ export default function Root() {
         updateUserPresence(message.data.id, { is_active: false });
         updateContactUserPresence(message.data.id, { is_active: false });
       }
+      if (message.event === constants.event.CALL_RECEIVE) {
+        console.log("message====================>", message);
+        if (message.data.user.id === currentUserId) {
+          setShowCallReceiver(true);
+        }
+      }
     } catch (err) {
       console.log(err);
     }
@@ -94,6 +101,17 @@ export default function Root() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
+  useEffect(() => {
+    console.log("showCallreceiver", showCallReceiver);
+    if (showCallReceiver) {
+      setTimeout(() => {
+        console.log("timeout", showCallReceiver);
+        setShowCallReceiver(false);
+      }, 10000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setShowCallReceiver]);
+
   return (
     <>
       <main className="w-screen h-screen flex overflow-hidden">
@@ -101,7 +119,7 @@ export default function Root() {
         {chatPreview ? <ChatPreview /> : <ChatSection />}
       </main>
 
-      <CallReceiver />
+      {showCallReceiver && <CallReceiver />}
     </>
   );
 }

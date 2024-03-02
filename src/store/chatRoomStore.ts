@@ -5,6 +5,7 @@ import {
   getChatRoomByUserIdApi,
   getSingleChatRoomApi,
   deleteChatRoomApi,
+  startCallApi,
 } from "../api/chatRoomApi";
 import { ChatContact } from "@/types/chat_room";
 
@@ -16,9 +17,9 @@ type Store = {
   chatRoomContact: ChatContact[];
   chatRoomData: any;
   chatPreview: boolean;
-
   singleRoomData: any;
 
+  startAudioVideoCall: (data: any) => void;
   getChatRoomContactData: () => Promise<void>;
   updateChatRoomContact: (item: any) => Promise<any>;
   updateContactByRoomId: (item: any, reOrder?: boolean) => Promise<any>;
@@ -247,6 +248,10 @@ const useChatRoomStore = create<Store>()((set) => ({
         return item;
       }),
     }));
+  },
+
+  startAudioVideoCall: (data: any) => {
+    startCallApi(data);
   },
 }));
 
