@@ -39,7 +39,7 @@ export default function Root() {
       });
       setTimeout(() => {
         notification.close();
-      }, 3000);
+      }, 30000);
     }
   }
 
@@ -110,7 +110,7 @@ export default function Root() {
       }, 10000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setShowCallReceiver]);
+  }, [showCallReceiver]);
 
   return (
     <>

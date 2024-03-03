@@ -38,12 +38,8 @@ const ChatSectionHeader = () => {
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
 
-  const {
-    singleRoomData,
-    deleteChatGroup,
-    deleteContactByRoomId,
-    startAudioVideoCall,
-  } = useChatRoomStore();
+  const { singleRoomData, deleteChatGroup, deleteContactByRoomId } =
+    useChatRoomStore();
   const { getChatGroupMembers, chatGroupMembers, updateChatGroup } =
     useChatGroupStore();
   const { users, removeUsersState, addUsersState } = useUserStore();
@@ -59,12 +55,6 @@ const ChatSectionHeader = () => {
     );
     addUsersState(user);
   }
-
-  const handleStartCall = () => {
-    startAudioVideoCall({
-      room_id: singleRoomData.id,
-    });
-  };
 
   return (
     <main>
@@ -94,16 +84,16 @@ const ChatSectionHeader = () => {
           )}
         </div>
         <div className="flex items-center gap-2 text-sm">
-          {/* <Link href="/lobby"> */}
-          <Button variant="ghost" size="icon" onClick={handleStartCall}>
-            <Video />
-          </Button>
-          {/* </Link> */}
-          {/* <Link href="/lobby"> */}
-          <Button variant="ghost" size="icon" onClick={handleStartCall}>
-            <Phone />
-          </Button>
-          {/* </Link> */}
+          <Link href="/meeting">
+            <Button variant="ghost" size="icon">
+              <Video />
+            </Button>
+          </Link>
+          <Link href="/meeting">
+            <Button variant="ghost" size="icon">
+              <Phone />
+            </Button>
+          </Link>
           {singleRoomData?.is_group ? (
             <Button
               variant="ghost"

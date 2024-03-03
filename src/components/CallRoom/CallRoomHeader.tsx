@@ -18,9 +18,6 @@ const CallRoomHeader = () => {
       <h1>0:00</h1>
 
       <div className="flex gap-2">
-        <Button>Leave</Button>
-        <Button>Leave</Button>
-        <Button>Leave</Button>
         <Button className="bg-red-500" onClick={leaveRoom}>
           Leave
         </Button>
