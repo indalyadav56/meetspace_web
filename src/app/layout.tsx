@@ -17,10 +17,11 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
+  const wsBaseUrl = process.env.NEXT_PUBLIC_WS_API_BASE_URL;
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SocketProvider>
+        <SocketProvider url={wsBaseUrl}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
