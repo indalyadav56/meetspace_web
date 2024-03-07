@@ -84,12 +84,12 @@ const ChatSectionHeader = () => {
           )}
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <Link href="/meeting">
+          <Link href={`/meeting/${singleRoomData?.id}`}>
             <Button variant="ghost" size="icon">
               <Video />
             </Button>
           </Link>
-          <Link href="/meeting">
+          <Link href={`/meeting/${singleRoomData?.id}`}>
             <Button variant="ghost" size="icon">
               <Phone />
             </Button>

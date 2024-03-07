@@ -14,14 +14,14 @@ export const useSocket = () => {
   return useContext(SocketContext);
 };
 
-export const SocketProvider = ({ children }: any) => {
+export const SocketProvider = ({ children, url }: any) => {
   const token = CookieService.getCookie(constants.token.ACCESS_TOKEN);
 
   const socket = useMemo(() => {
     if (!token) return null;
-    const wsBaseUrl = process.env.NEXT_PUBLIC_WS_API_BASE_URL;
+
     const ws = new WebSocket(
-      `${wsBaseUrl}/v1/chat?token=${token}`
+      `${url}/v1/chat?token=${token}`
     ) as CustomWebSocket;
 
     ws.onopen = (event) => {
