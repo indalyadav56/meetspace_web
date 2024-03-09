@@ -14,8 +14,14 @@ import { getUserIdFromToken } from "@/lib/jwt";
 import CallReceiver from "@/components/CallReceiver";
 
 export default function Root() {
-  const [showCallReceiver, setShowCallReceiver] = useState(false);
-  const { chatPreview, updateContactUserPresence } = useChatRoomStore();
+  const [callReceiverData, setCallReceiverData] = useState();
+  const {
+    chatPreview,
+    updateContactUserPresence,
+    setCallAccept,
+    setCallReceiver,
+    callReceiver,
+  } = useChatRoomStore();
   const { updateContactByRoomId } = useChatRoomStore();
   const {
     getUserProfile,
@@ -76,10 +82,18 @@ export default function Root() {
         updateContactUserPresence(message.data.id, { is_active: false });
       }
       if (message.event === constants.event.CALL_RECEIVE) {
-        console.log("message====================>", message);
         if (message.data.user.id === currentUserId) {
-          setShowCallReceiver(true);
+          setCallReceiver(true);
+          setCallReceiverData(message.data);
         }
+      }
+
+      if (message.event === constants.event.CALL_ACCEPT) {
+        setCallReceiver(false);
+        setCallAccept(true);
+      }
+      if (message.event === constants.event.CALL_REJECT) {
+        setCallReceiver(false);
       }
     } catch (err) {
       console.log(err);
@@ -102,15 +116,19 @@ export default function Root() {
   }, [socket]);
 
   useEffect(() => {
-    console.log("showCallreceiver", showCallReceiver);
-    if (showCallReceiver) {
+    if (callReceiver) {
       setTimeout(() => {
-        console.log("timeout", showCallReceiver);
-        setShowCallReceiver(false);
-      }, 10000);
+        setCallReceiver(false);
+        socket?.send(
+          JSON.stringify({
+            event: "CALL_REJECT",
+            data: {},
+          })
+        );
+      }, 60000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showCallReceiver]);
+  }, [callReceiver]);
 
   return (
     <>
@@ -119,7 +137,7 @@ export default function Root() {
         {chatPreview ? <ChatPreview /> : <ChatSection />}
       </main>
 
-      {showCallReceiver && <CallReceiver />}
+      {callReceiver && <CallReceiver data={callReceiverData} />}
     </>
   );
 }

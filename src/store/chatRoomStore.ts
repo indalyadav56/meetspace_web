@@ -18,6 +18,8 @@ type Store = {
   chatRoomData: any;
   chatPreview: boolean;
   singleRoomData: any;
+  callAccept: boolean;
+  callReceiver: boolean;
 
   startAudioVideoCall: (data: any) => void;
   getChatRoomContactData: () => Promise<void>;
@@ -29,6 +31,8 @@ type Store = {
   deleteChatGroup: (roomID: string) => Promise<any>;
   deleteContactByRoomId: (roomID: string) => Promise<any>;
   updateContactUserPresence: (user_id: string, update_data: Object) => void;
+  setCallAccept: (flag: boolean) => void;
+  setCallReceiver: (flag: boolean) => void;
 };
 
 const useChatRoomStore = create<Store>()((set) => ({
@@ -39,6 +43,8 @@ const useChatRoomStore = create<Store>()((set) => ({
   chatRoomContact: [],
   chatRoomData: [],
   chatPreview: true,
+  callAccept: false,
+  callReceiver: false,
   singleRoomData: {},
 
   getChatRoomContactData: async () => {
@@ -252,6 +258,30 @@ const useChatRoomStore = create<Store>()((set) => ({
 
   startAudioVideoCall: (data: any) => {
     startCallApi(data);
+  },
+
+  setCallAccept: (flag: boolean) => {
+    if (flag) {
+      set((state) => ({
+        callAccept: true,
+      }));
+    } else {
+      set((state) => ({
+        callAccept: false,
+      }));
+    }
+  },
+
+  setCallReceiver: (flag: boolean) => {
+    if (flag) {
+      set((state) => ({
+        callReceiver: true,
+      }));
+    } else {
+      set((state) => ({
+        callReceiver: false,
+      }));
+    }
   },
 }));
 

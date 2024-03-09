@@ -46,5 +46,5 @@ export const deleteChatRoomApi = async (roomId: string) => {
 };
 
 export const startCallApi = async (data: any) => {
-  return api.post(`/v1/chat/call`, data);
+  return api.post(`/v1/chat/room/call`, data);
 };

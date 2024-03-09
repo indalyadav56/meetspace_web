@@ -28,6 +28,8 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         return "w-20 h-20";
       case "xl":
         return "w-32 h-32";
+      case "2xl":
+        return "w-64 h-64";
       default:
         return "w-14 h-14";
     }

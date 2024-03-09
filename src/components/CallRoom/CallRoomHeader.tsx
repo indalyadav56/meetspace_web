@@ -16,7 +16,6 @@ const CallRoomHeader = () => {
       style={{ backgroundColor: "#232323" }}
     >
       <h1>0:00</h1>
-
       <div className="flex gap-2">
         <Button className="bg-red-500" onClick={leaveRoom}>
           Leave
