@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
+import axios from "axios";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -21,6 +22,7 @@ import {
 import useAuthStore from "@/store/authStore";
 import { useEffect } from "react";
 import Image from "next/image";
+import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
 
 const LoginForm = () => {
   const { loginUser, loading, error, message, success, actionType } =
@@ -70,6 +72,26 @@ const LoginForm = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/v1/auth/google";
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = "http://localhost:8080/v1/auth/github";
+  };
+
+  const loginGoogle = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      console.log("codeResponse", codeResponse);
+      const tokenResponse = await axios.get(
+        `http://localhost:8080/v1/auth/google/callback?code=${codeResponse.code}`
+      );
+
+      console.log("tokenResponse", tokenResponse);
+    },
+    flow: "auth-code",
+  });
 
   return (
     <main>
@@ -123,7 +145,11 @@ const LoginForm = () => {
         <hr className="w-full " />
       </div>
       <div className="flex my-4 gap-4">
-        <Button variant="outline" className="w-full h-12">
+        <Button
+          variant="outline"
+          className="w-full h-12"
+          onClick={handleGoogleLogin}
+        >
           <Image
             src="/google.png"
             width={36}
@@ -133,7 +159,12 @@ const LoginForm = () => {
           />
           Google
         </Button>
-        <Button variant="outline" className="w-full h-12">
+
+        <Button
+          variant="outline"
+          className="w-full h-12"
+          onClick={handleGithubLogin}
+        >
           <Image
             src="/github.png"
             width={36}

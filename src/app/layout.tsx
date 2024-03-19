@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import "./globals.css";
 import { SocketProvider } from "@/context/Socket";
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <GoogleOAuthProvider clientId="987941566886-flhamhfbrti96nhqcml54l4tkod3j1as.apps.googleusercontent.com">
+              {children}
+            </GoogleOAuthProvider>
           </ThemeProvider>
         </SocketProvider>
       </body>
