@@ -9,8 +9,8 @@ services:
       - "3000:3000"
     env_file: .env.local
 
-  nginx:
-    build: ./nginx
-    container_name: meetspace_nginx
-    ports:
-      - "8010:8010"
+  # nginx:
+  #   build: ./nginx
+  #   container_name: meetspace_nginx
+  #   ports:
+  #     - "8010:8010"
